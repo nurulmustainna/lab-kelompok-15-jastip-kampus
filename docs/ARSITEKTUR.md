@@ -175,9 +175,7 @@ billing-service:
 - Auditability: perubahan status pesanan & pembayaran wajib tercatat.
 
 ### Preview Arsitektur
-
-![Arsitektur Sistem Jastip Kampus](Aarsitektur.png)
-
+![Preview Arsitektur](Arsitektur.png)
 ### Preview Sequence
 
 ## Dokumen Detail
