@@ -1,10 +1,10 @@
-# AI Log — Kelompok 15 (Jastip Kampus)
+# AI Log ï¿½ Kelompok 15 (Jastip Kampus)
 
 Dokumen ini mencatat interaksi dengan AI / GitHub Copilot selama pengerjaan proyek.
+#### Bukti Verifikasi Swagger Editor
+![Hasil Validasi Swagger Editor](docs/swagger-preview.png)
 
----
-
-### Arsitek Sistem — Pertemuan 1
+### Arsitek Sistem ï¿½ Pertemuan 1
 
 #### Entri 1
 - **Konteks**: Membuat layanan katalog Express pertama (`services/catalog/index.js`).

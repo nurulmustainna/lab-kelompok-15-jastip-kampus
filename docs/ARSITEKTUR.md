@@ -13,10 +13,6 @@ Diagram sederhana komunikasi antar layanan:
        +--------> [tracking-service]
        (Memperbarui status barang yang dititip)
 
-Aturan Emas:
-Setiap layanan di atas memiliki database-nya sendiri dan tidak boleh saling campur tangan secara langsung.
-# Lab-Kelompok_12-Booking_Charger_Kendaraan_Listrik
-
 ![Arsitektur Sistem Jastip Kampus](arsitektur.png)
 
 ## Ringkasan Proyek
@@ -178,26 +174,14 @@ billing-service:
 - Observability: metrics, logs, traces end-to-end.
 - Auditability: perubahan status pesanan & pembayaran wajib tercatat.
 
-## ADR (Architecture Decision Record)
-Daftar keputusan arsitektur:
-- [ADR Index](docs/adr/README.md)
-- [ADR 0001 - Arsitektur Microservices Berbasis Domain](docs/adr/0001-arsitektur-microservices-domain.md)
-- [ADR 0002 - Strategi Anti-overlap Booking Slot](docs/adr/0002-strategi-anti-overlap-booking-slot.md)
-- [ADR 0003 - Auto-release No-show dan Waitlist Promotion](docs/adr/0003-auto-release-no-show-waitlist.md)
-
-## Diagram
-- Diagram teknis (Mermaid): [docs/diagrams.md](docs/diagrams.md)
-- Ringkasan arsitektur: [arsitektur.png](arsitektur.png)
-- Ringkasan sequence: [sequence_diagram.png](sequence_diagram.png)
-
 ### Preview Arsitektur
 
-![Arsitektur Sistem Jastip Kampus](arsitektur.png)
+![Arsitektur Sistem Jastip Kampus](Aarsitektur.png)
 
 ### Preview Sequence
 
 ## Dokumen Detail
-- Detail arsitektur lengkap: [docs/architecture.md](docs/architecture.md)
+- Detail arsitektur lengkap: [docs/ARSITEKTUR.md](docs/ARSITEKTUR.md)
 
 ## Asumsi Operasional
 - Semua waktu transaksi & jadwal pengantaran disimpan dalam UTC.
