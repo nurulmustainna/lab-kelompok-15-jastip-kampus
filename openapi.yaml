@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  title: API Jastip Kampus
+  version: 0.1.0
+  description: Kontrak API Layanan Jastip Kampus.
+servers:
+  - url: http://localhost:3001
+paths:
+  /items:
+    get:
+      summary: Ambil daftar item katalog
+      responses:
+        "200":
+          description: Daftar item
+  /health:
+    get:
+      summary: Cek layanan hidup
+      responses:
+        "200":
+          description: Layanan sehat
