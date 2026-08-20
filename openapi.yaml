@@ -1,20 +1,65 @@
 openapi: 3.0.3
 info:
   title: API Jastip Kampus
-  version: 0.1.0
-  description: Kontrak API Layanan Jastip Kampus.
-servers:
-  - url: http://localhost:3001
+  version: 0.2.0
+  description: Dokumentasi API Microservices Jastip Kampus dengan UPDATE Atomik
 paths:
   /items:
     get:
-      summary: Ambil daftar item katalog
+      summary: Ambil semua daftar jastip/menu
       responses:
         "200":
-          description: Daftar item
-  /health:
+          description: Berhasil mengambil daftar item
+  /items/{id}:
     get:
-      summary: Cek layanan hidup
+      summary: Ambil detail item berdasarkan ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Layanan sehat
+          description: Detail item ditemukan
+        "404":
+          description: Item tidak ditemukan
+  /items/{id}/ambil:
+    post:
+      summary: Kurangi kuota/stok jastip secara atomik
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Kuota berhasil dikurangi
+        "409":
+          description: Stok/kuota habis
+  /orders:
+    post:
+      summary: Buat pesanan (memesan 1 sumber daya rebutan)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [itemId, qty]
+              properties:
+                itemId:
+                  type: integer
+                qty:
+                  type: integer
+                  minimum: 1
+      responses:
+        "201":
+          description: Pesanan dibuat
+        "400":
+          description: Input tidak valid
+        "409":
+          description: Sumber daya habis (kuota jastip habis)
+        "502":
+          description: Layanan catalog bermasalah
