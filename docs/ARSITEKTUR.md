@@ -12,9 +12,6 @@ Diagram sederhana komunikasi antar layanan:
        |
        +--------> [tracking-service]
        (Memperbarui status barang yang dititip)
-
-![Arsitektur Sistem Jastip Kampus](arsitektur.png)
-
 ## Ringkasan Proyek
 Sistem ini dirancang untuk proses pemesanan Jasa Titip (Jastip) makanan dan barang di lingkungan area kampus dengan kapasitas jastiper (runner) dan stok kantin/toko yang terbatas.
 
