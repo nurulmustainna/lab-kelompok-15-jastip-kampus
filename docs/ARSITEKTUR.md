@@ -1,11 +1,10 @@
 # Context Map: Jastip Kampus
 
 Diagram sederhana komunikasi antar layanan:
-
 ![Diagram Arsitektur Jastip Kampus](Arsitektur.png)
 
 [order-service] ----> [catalog-service]
-(Meminta data harga acuan toko)git add docs/ARSITEKTUR.md
+(Meminta data harga acuan toko)
        |
        +--------> [payment-service]
        (Meneruskan instruksi tahan/lepas dana)
