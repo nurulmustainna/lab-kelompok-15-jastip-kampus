@@ -2,7 +2,7 @@
 
 Diagram sederhana komunikasi antar layanan:
 
-![Diagram Arsitektur Jastip Kampus](Arsitektur.png)
+![Diagram Arsitektur Jastip Kampus](arsitektur.png)
 
 [order-service] ----> [catalog-service]
 (Meminta data harga acuan toko)
@@ -172,7 +172,7 @@ billing-service:
 - Auditability: perubahan status pesanan & pembayaran wajib tercatat.
 
 ### Preview Arsitektur
-![Preview Arsitektur](Arsitektur.png)
+![Preview Arsitektur](arsitektur.png)
 ### Preview Sequence
 
 ## Dokumen Detail
