@@ -1,21 +1,60 @@
 const express = require("express");
-const app = express();
-app.use(express.json());
+const { Pool } = require("pg");
 
-// Data katalog Jastip Kampus (In-Memory)
-const items = [
-  { id: 1, nama: "Ayam Geprek Kantin Pusat", harga: 15000, sisa: 50 },
-  { id: 2, nama: "Es Teh Jumbo Teknik", harga: 5000, sisa: 100 },
-];
-
-app.get("/items", (_req, res) => res.json(items));
-
-app.get("/items/:id", (req, res) => {
-  const item = items.find((x) => x.id === Number(req.params.id));
-  if (!item) return res.status(404).json({ error: "item tidak ditemukan" });
-  res.json(item);
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 });
 
-app.get("/health", (_req, res) => res.json({ status: "ok", service: "catalog" }));
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.listen(3001, () => console.log("catalog berjalan di :3001"));
+app.use(express.json());
+
+app.get("/health", async (_req, res) => {
+  try {
+    await pool.query("SELECT 1");
+    res.json({ status: "OK" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "ERROR" });
+  }
+});
+
+app.get("/catalog", async (req, res) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(req.query.limit, 10) || 20),
+    );
+    const offset = (page - 1) * limit;
+
+    const { rows } = await pool.query(
+      "SELECT id, nama, harga, sisa FROM items ORDER BY id LIMIT $1 OFFSET $2",
+      [limit, offset],
+    );
+
+    const total = (
+      await pool.query("SELECT COUNT(*)::int AS n FROM items")
+    ).rows[0].n;
+
+    res.json({
+      data: rows,
+      page,
+      limit,
+      total,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: {
+        code: "DATABASE_ERROR",
+        message: "Gagal mengambil data catalog",
+      },
+    });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Catalog service berjalan di port ${PORT}`);
+});

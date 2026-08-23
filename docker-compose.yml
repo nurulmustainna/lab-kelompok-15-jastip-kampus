@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: catalog-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_password
+      POSTGRES_DB: catalog_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  catalog:
+    build: ./services/catalog
+    container_name: catalog-service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://catalog_user:catalog_password@postgres:5432/catalog_db
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
