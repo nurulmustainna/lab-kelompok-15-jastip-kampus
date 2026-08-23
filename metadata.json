@@ -1,0 +1,7 @@
+{
+  "name": "Jastip Kampus Unismuh",
+  "description": "Jastip Kampus — Titip-beli antar mahasiswa: buka order, tawar, bayar, lacak berbasis 4 microservices di sekitar Kampus Universitas Muhammadiyah Makassar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

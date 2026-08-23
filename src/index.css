@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .blue-gradient {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  }
+
+  .blue-gradient-subtle {
+    background: linear-gradient(135deg, #172554 0%, #1e40af 50%, #2563eb 100%);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(226, 232, 240, 0.85);
+  }
+
+  .glass-card-dark {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(51, 65, 85, 0.7);
+  }
+
+  .service-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #dbeafe;
+    flex-shrink: 0;
+  }
+}
