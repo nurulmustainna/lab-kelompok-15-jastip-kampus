@@ -1090,8 +1090,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </tbody>
                   </table>
                 </div>
-
-                {/* Search & Filter (if needed for future) */}
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#061A14] hover:bg-[#1B4D3E] text-[#34D399] font-bold rounded-lg text-[10px] border border-[#1B4D3E] transition-all">
+                            Lihat Escrow
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

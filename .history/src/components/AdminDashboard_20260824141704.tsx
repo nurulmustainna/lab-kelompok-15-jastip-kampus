@@ -25,7 +25,6 @@ interface AdminDashboardProps {
   sessions?: JastipSession[];
   currentOrder?: JastipOrder;
   studentAccounts?: StudentAccount[];
-  studentOrders?: Record<string, JastipOrder>;
   onUpdateCatalogItem?: (item: CatalogItem) => void;
   onAddCatalogItem?: (item: CatalogItem) => void;
   onDeleteCatalogItem?: (itemId: string) => void;
@@ -48,7 +47,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   sessions = [],
   currentOrder,
   studentAccounts = [],
-  studentOrders = {},
   onUpdateCatalogItem,
   onAddCatalogItem,
   onDeleteCatalogItem
@@ -646,7 +644,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               
-              {/* Card 1: Total Catalog Jastip | Value: Dynamic from catalogItems */}
+              {/* Card 1: Total Catalog Jastip | Value: 50 Item */}
               <div className="bg-[#0F2D24] hover:bg-[#13382D] border border-[#1B4D3E] hover:border-[#10B981]/40 rounded-2xl p-5 transition-all shadow-md group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-300">Total Catalog Jastip</span>
@@ -655,7 +653,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
                 <div className="text-3xl font-black text-white tracking-tight">
-                  {catalogItems.length} Item
+                  50 Item
                 </div>
                 <p className="text-xs text-[#A7F3D0]/80 mt-1 flex items-center gap-1">
                   <span>Aktif di Kantin & Toko Unismuh</span>
@@ -666,7 +664,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Card 2: Total User / Mahasiswa | Value: Dynamic from studentAccounts */}
+              {/* Card 2: Total User / Mahasiswa | Value: 1.250 */}
               <div className="bg-[#0F2D24] hover:bg-[#13382D] border border-[#1B4D3E] hover:border-[#10B981]/40 rounded-2xl p-5 transition-all shadow-md group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-300">Total User / Mahasiswa</span>
@@ -675,7 +673,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
                 <div className="text-3xl font-black text-white tracking-tight">
-                  {studentAccounts.length > 0 ? studentAccounts.length : '—'}
+                  1.250
                 </div>
                 <p className="text-xs text-[#A7F3D0]/80 mt-1 flex items-center gap-1">
                   <span>Akun pembeli & runner terverifikasi</span>
@@ -686,7 +684,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Card 3: Pesanan Jastip Terjual | Value: Dynamic count from studentOrders */}
+              {/* Card 3: Pesanan Jastip Terjual | Value: 3.420 */}
               <div className="bg-[#0F2D24] hover:bg-[#13382D] border border-[#1B4D3E] hover:border-[#10B981]/40 rounded-2xl p-5 transition-all shadow-md group">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-300">Pesanan Jastip Terjual</span>
@@ -695,7 +693,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
                 <div className="text-3xl font-black text-white tracking-tight">
-                  {Object.keys(studentOrders).length}
+                  3.420
                 </div>
                 <p className="text-xs text-[#A7F3D0]/80 mt-1 flex items-center gap-1">
                   <span>Transaksi jastip berhasil</span>
@@ -706,7 +704,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Card 4: Pendapatan Komisi (Aksen Hijau Terang) | Value: Dynamic calculated from studentOrders */}
+              {/* Card 4: Pendapatan Komisi (Aksen Hijau Terang) | Value: Rp 8,5 M */}
               <div className="bg-gradient-to-br from-[#0F2D24] via-[#13382D] to-[#0A3D2E] border border-[#10B981]/50 hover:border-[#10B981] rounded-2xl p-5 transition-all shadow-lg group relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#10B981]/15 rounded-full blur-xl pointer-events-none"></div>
                 <div className="flex items-center justify-between mb-3 relative z-10">
@@ -716,20 +714,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
                 <div className="text-3xl font-black text-[#34D399] tracking-tight relative z-10">
-                  {(() => {
-                    const totalRevenue = Object.values(studentOrders).reduce((sum, order) => {
-                      const grandTotal = order.grandTotal || 0;
-                      const commission = Math.round(grandTotal * 0.05); // 5% commission
-                      return sum + commission;
-                    }, 0);
-                    if (totalRevenue === 0) return 'Rp —';
-                    return new Intl.NumberFormat('id-ID', {
-                      style: 'currency',
-                      currency: 'IDR',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0
-                    }).format(totalRevenue);
-                  })()}
+                  Rp 8,5 M
                 </div>
                 <p className="text-xs text-emerald-200 mt-1 relative z-10">
                   Settlement gateway 100% OK
@@ -1032,66 +1017,101 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <tr>
                         <th className="p-3.5">Order ID</th>
                         <th className="p-3.5">Pemesan (NIM)</th>
+                        <th className="p-3.5">Runner / Jastiper</th>
                         <th className="p-3.5">Item Belanja</th>
+                        <th className="p-3.5">Lokasi Antar</th>
                         <th className="p-3.5">Total & Ongkir</th>
                         <th className="p-3.5">Status</th>
                         <th className="p-3.5 text-right">Aksi SRE</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#1B4D3E]/60 text-slate-200">
-                      {Object.entries(studentOrders).length > 0 ? (
-                        Object.entries(studentOrders).map(([nim, order]) => {
-                          const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-                            'MENUNGGU_PEMBAYARAN': { bg: 'bg-yellow-950', text: 'text-yellow-300', border: 'border-yellow-800' },
-                            'ESCROW_DITAMPUNG': { bg: 'bg-blue-950', text: 'text-blue-300', border: 'border-blue-800' },
-                            'DIBELI_JASTIPER': { bg: 'bg-purple-950', text: 'text-purple-300', border: 'border-purple-800' },
-                            'MENUJU_KAMPUS': { bg: 'bg-orange-950', text: 'text-orange-300', border: 'border-orange-800' },
-                            'SAMPAI_DI_TITIK_TEMU': { bg: 'bg-cyan-950', text: 'text-cyan-300', border: 'border-cyan-800' },
-                            'SELESAI_DITERIMA': { bg: 'bg-emerald-900/60', text: 'text-[#10B981]', border: 'border-emerald-700' }
-                          };
-                          const colors = statusColors[order.status] || { bg: 'bg-slate-900', text: 'text-slate-300', border: 'border-slate-700' };
-                          
-                          return (
-                            <tr key={nim} className="hover:bg-[#13382D] transition-colors">
-                              <td className="p-3.5 font-mono font-bold text-[#10B981]">#{order.id || `ORD-${nim.slice(-4)}`}</td>
-                              <td className="p-3.5">
-                                <div className="font-bold text-white">{order.buyerName || 'Unknown'}</div>
-                                <span className="text-[10px] text-slate-400 font-mono">{nim}</span>
-                              </td>
-                              <td className="p-3.5 font-medium">{order.itemName || 'No items'}</td>
-                              <td className="p-3.5">
-                                <div className="font-bold text-white">
-                                  Rp {(order.total || 0).toLocaleString('id-ID')}
-                                </div>
-                                <span className="text-[10px] text-[#34D399]">
-                                  Ongkir Rp {(order.shippingCost || 0).toLocaleString('id-ID')}
-                                </span>
-                              </td>
-                              <td className="p-3.5">
-                                <span className={`${colors.bg} ${colors.text} border ${colors.border} px-2 py-0.5 rounded-full text-[10px] font-bold`}>
-                                  {order.status?.replace(/_/g, ' ') || 'UNKNOWN'}
-                                </span>
-                              </td>
-                              <td className="p-3.5 text-right">
-                                <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
-                                  Audit Trace
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="p-3.5 text-center text-slate-400">
-                            Tidak ada pesanan sampai saat ini
-                          </td>
-                        </tr>
-                      )}
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8821</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Ahmad Fauzan</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841104423 (Informatika)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Andi Muhammad Fikri</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-01 (Kantin Menara)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Ayam Geprek + Es Teh</td>
+                        <td className="p-3.5">Lab Komputer Lt.4</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 43.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 7.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-emerald-950 text-[#34D399] border border-[#10B981]/40 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            DIANTAR
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
+                            Audit Trace
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8822</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Nurhaeni</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841101221 (FKIP)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Rizki Pratama</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-02 (Toko Buku)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Paket ATK & Binder Spiral</td>
+                        <td className="p-3.5">R.302 Gedung FKIP</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 28.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 5.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-blue-950 text-blue-300 border border-blue-800 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            DIPROSES
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
+                            Audit Trace
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8820</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Fahmi Ahmad</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841108822 (Kedokteran)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Andi Muhammad Fikri</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-01 (Kantin Menara)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Nasi Kuning Porsi Jumbo (x2)</td>
+                        <td className="p-3.5">Perpustakaan Lt.2</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 35.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 6.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-emerald-900/60 text-[#10B981] border border-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            SELESAI (QR OK)
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#061A14] hover:bg-[#1B4D3E] text-[#34D399] font-bold rounded-lg text-[10px] border border-[#1B4D3E] transition-all">
+                            Lihat Escrow
+                          </button>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-
-                {/* Search & Filter (if needed for future) */}
               </div>
             </div>
           )}
@@ -1537,12 +1557,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#1B4D3E]/60 text-slate-200">
-                      {(studentAccounts.length > 0 ? studentAccounts : [
-                        { id: 'MHS-00', nim: '105841108319', name: 'NUNU', email: '105841108319@student.unismuh.ac.id', password: '831912', faculty: 'Fakultas Teknik', prodi: 'S1 Teknik Informatika', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', phone: '0812-4411-8319', role: 'mahasiswa' as const, balance: 200000, verifiedStatus: 'TERVERIFIKASI_KAMPUS' as const, totalOrders: 8, rating: 5.0, joinedYear: '2023' },
-                        { id: 'MHS-01', nim: '105841104423', name: 'Ahmad Fauzan', email: '105841104423@student.unismuh.ac.id', password: '442312', faculty: 'Fakultas Teknik', prodi: 'S1 Teknik Elektro', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', phone: '0812-9888-8801', role: 'mahasiswa' as const, balance: 150000, verifiedStatus: 'TERVERIFIKASI_KAMPUS' as const, totalOrders: 12, rating: 5.0, joinedYear: '2023' },
-                        { id: 'MHS-02', nim: '105841103322', name: 'Andi Muhammad Fikri', email: '105841103322@student.unismuh.ac.id', password: '332212', faculty: 'Fakultas Teknik', prodi: 'S1 Teknik Informatika', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80', phone: '0852-4411-3322', role: 'jastiper' as const, balance: 285000, verifiedStatus: 'TERVERIFIKASI_KAMPUS' as const, totalOrders: 38, rating: 4.9, joinedYear: '2023' },
-                        { id: 'MHS-03', nim: '105841102211', name: 'Nurul Mutmainnah', email: '105841102211@student.unismuh.ac.id', password: '221112', faculty: 'Fakultas Kedokteran & Ilmu Kesehatan', prodi: 'S1 Farmasi', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80', phone: '0821-5522-1100', role: 'mahasiswa' as const, balance: 195000, verifiedStatus: 'TERVERIFIKASI_KAMPUS' as const, totalOrders: 29, rating: 4.8, joinedYear: '2022' },
-                      ]).map((u, i) => (
+                      {[
+                        { nim: '105841104423', name: 'Ahmad Fauzan', prodi: 'S1 Teknik Informatika', role: 'Mahasiswa / Pemesan', tx: '14 Order', status: 'VERIFIED' },
+                        { nim: '105841103322', name: 'Andi Muhammad Fikri', prodi: 'S1 Teknik Informatika', role: 'Jastiper / Runner', tx: '28 Order', status: 'VERIFIED' },
+                        { nim: '105841101221', name: 'Nurhaeni', prodi: 'S1 Pendidikan Bahasa Inggris', role: 'Mahasiswa / Pemesan', tx: '6 Order', status: 'VERIFIED' },
+                        { nim: '105841105520', name: 'Rizki Pratama', prodi: 'S1 Manajemen', role: 'Jastiper / Runner', tx: '41 Order', status: 'VERIFIED' },
+                      ].map((u, i) => (
                         <tr key={i} className="hover:bg-[#13382D] transition-colors">
                           <td className="p-3.5">
                             <div className="font-bold text-white">{u.name}</div>
@@ -1551,16 +1571,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <td className="p-3.5 font-medium">{u.prodi}</td>
                           <td className="p-3.5">
                             <span className="bg-[#061A14] text-[#A7F3D0] border border-[#1B4D3E] px-2 py-0.5 rounded-md text-[10px] font-bold">
-                              {u.role === 'jastiper' ? 'Jastiper / Runner' : 'Mahasiswa / Pemesan'}
+                              {u.role}
                             </span>
                           </td>
                           <td className="p-3.5">
                             <span className="inline-flex items-center gap-1 text-[#34D399] font-bold text-[10px]">
                               <CheckCircle2 className="w-3.5 h-3.5" />
-                              <span>{u.verifiedStatus === 'TERVERIFIKASI_KAMPUS' ? 'VERIFIED' : 'PENDING'}</span>
+                              <span>{u.status}</span>
                             </span>
                           </td>
-                          <td className="p-3.5 font-mono text-white">{u.totalOrders} Order</td>
+                          <td className="p-3.5 font-mono text-white">{u.tx}</td>
                           <td className="p-3.5 text-right">
                             <button type="button" className="px-2.5 py-1 bg-[#061A14] hover:bg-[#1B4D3E] text-slate-300 rounded-lg text-[10px] font-bold border border-[#1B4D3E] transition-all">
                               Detail Akun

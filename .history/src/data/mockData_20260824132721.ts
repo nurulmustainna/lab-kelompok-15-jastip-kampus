@@ -929,31 +929,13 @@ export const MOCK_SESSIONS: JastipSession[] = [
 
 export const MOCK_STUDENT_ACCOUNTS: StudentAccount[] = [
   {
-    id: 'MHS-00',
-    nim: '105841108319',
-    name: 'NUNU',
-    email: '105841108319@student.unismuh.ac.id',
-    password: '831912',
-    faculty: 'Fakultas Teknik',
-    prodi: 'S1 Teknik Informatika',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    phone: '0812-4411-8319',
-    role: 'mahasiswa',
-    balance: 200000,
-    verifiedStatus: 'TERVERIFIKASI_KAMPUS',
-    totalOrders: 8,
-    rating: 5.0,
-    joinedYear: '2023'
-  },
-  {
     id: 'MHS-01',
     nim: '105841104423',
     name: 'Ahmad Fauzan',
     email: '105841104423@student.unismuh.ac.id',
-    password: '442312',
     faculty: 'Fakultas Teknik',
     prodi: 'S1 Teknik Elektro',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     phone: '0812-9888-8801',
     role: 'mahasiswa',
     balance: 150000,
@@ -967,7 +949,6 @@ export const MOCK_STUDENT_ACCOUNTS: StudentAccount[] = [
     nim: '105841103322',
     name: 'Andi Muhammad Fikri',
     email: '105841103322@student.unismuh.ac.id',
-    password: '332212',
     faculty: 'Fakultas Teknik',
     prodi: 'S1 Teknik Informatika',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
@@ -984,50 +965,15 @@ export const MOCK_STUDENT_ACCOUNTS: StudentAccount[] = [
     nim: '105841102211',
     name: 'Nurul Mutmainnah',
     email: '105841102211@student.unismuh.ac.id',
-    password: '221112',
     faculty: 'Fakultas Kedokteran & Ilmu Kesehatan',
     prodi: 'S1 Farmasi',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     phone: '0821-5522-1100',
-    role: 'mahasiswa',
+    role: 'jastiper',
     balance: 195000,
     verifiedStatus: 'TERVERIFIKASI_KAMPUS',
     totalOrders: 29,
     rating: 4.8,
-    joinedYear: '2022'
-  },
-  {
-    id: 'MHS-04',
-    nim: '105841114532',
-    name: 'Aswan',
-    email: '105841114532@student.unismuh.ac.id',
-    password: '453212',
-    faculty: 'Fakultas Teknik',
-    prodi: 'S1 Teknik Sipil',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    phone: '0813-5599-4532',
-    role: 'mahasiswa',
-    balance: 120000,
-    verifiedStatus: 'TERVERIFIKASI_KAMPUS',
-    totalOrders: 5,
-    rating: 4.9,
-    joinedYear: '2024'
-  },
-  {
-    id: 'MHS-05',
-    nim: '105841107755',
-    name: 'Tri Wahyuni',
-    email: '105841107755@student.unismuh.ac.id',
-    password: '775512',
-    faculty: 'Fakultas Ekonomi & Bisnis',
-    prodi: 'S1 Manajemen',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-    phone: '0853-9988-7755',
-    role: 'mahasiswa',
-    balance: 230000,
-    verifiedStatus: 'TERVERIFIKASI_KAMPUS',
-    totalOrders: 14,
-    rating: 5.0,
     joinedYear: '2022'
   }
 ];
@@ -1118,311 +1064,62 @@ export const PAYMENT_METHODS_DATA: PaymentMethodOption[] = [
   }
 ];
 
-export const MOCK_STUDENT_ORDERS: Record<string, JastipOrder> = {
-  // 1. Akun NUNU (105841108319) - Pesanan Coto Makassar Spesial
-  '105841108319': {
-    id: 'ORD-20260824-001',
-    orderCode: 'JSTP-UNISMUH-1610',
-    customerName: 'NUNU',
-    customerProdi: 'S1 Teknik Informatika (105841108319)',
-    sessionId: 'SES-UNISMUH-01',
-    items: [
-      { item: MOCK_CATALOG_ITEMS[1], qty: 1 } // Coto Makassar Daging Spesial + 2 Ketupat Daun (Rp 28.000 + Jastip Rp 5.000)
-    ],
-    totalItemPrice: 28000,
-    totalJastipFee: 5000,
-    appFee: 1000,
-    grandTotal: 34000,
-    paymentMethod: 'QRIS_UNISMUH',
-    paymentMethodLabel: 'QRIS Unismuh Pay (Instan)',
-    status: 'DIBELI_JASTIPER',
-    meetingPoint: 'Lobby Menara Iqra Unismuh (Depan Pojok Baca)',
-    createdAt: '16:41 WITA',
-    escrowStatus: 'HELD_IN_ESCROW',
-    trackingHistory: [
-      {
-        step: '1. Buka Order & Titipan Dibuat',
-        timestamp: '16:41 WITA',
-        note: 'Pesanan dibuat oleh NUNU (105841108319) untuk 1x Coto Makassar Daging Spesial + 2 Ketupat Daun.',
-        done: true
-      },
-      {
-        step: '2. Bayar ke Rekening Bersama (Escrow)',
-        timestamp: '16:43 WITA',
-        note: 'Pembayaran via QRIS Unismuh Pay (Instan). Dana Rp 34.000 telah dikunci aman di Payment-Service Escrow Vault.',
-        done: true
-      },
-      {
-        step: '3. Pesanan Diklaim Jastiper',
-        timestamp: '16:45 WITA',
-        note: 'Pesanan telah diklaim tercepat oleh Mitra Jastip. Jastiper bersiap menuju warung.',
-        done: true
-      },
-      {
-        step: '4. Pembelian di Warung/Toko',
-        timestamp: '16:55 WITA',
-        note: 'Jastiper membeli pesanan di Coto Daeng Alauddin Pintu 1.',
-        done: true
-      },
-      {
-        step: '5. Lacak: Jastiper Menuju Kampus',
-        timestamp: '17:05 WITA',
-        note: 'Jastiper berangkat menuju kampus Unismuh.',
-        done: false
-      },
-      {
-        step: '6. Serah Terima di Menara Iqra',
-        timestamp: '17:15 WITA (Estimasi)',
-        note: 'Serah terima di Lobby Menara Iqra (Depan Pojok Baca).',
-        done: false
-      }
-    ]
-  },
-
-  // 2. Akun Ahmad Fauzan (105841104423) - Pesanan Ayam Geprek + Es Kopi Susu
-  '105841104423': {
-    id: 'ORD-20260821-009',
-    orderCode: 'JSTP-UNISMUH-8841',
-    customerName: 'Ahmad Fauzan',
-    customerProdi: 'S1 Teknik Elektro (105841104423)',
-    sessionId: 'SES-UNISMUH-01',
-    items: [
-      { item: MOCK_CATALOG_ITEMS[0], qty: 1 }, // Ayam Geprek
-      { item: MOCK_CATALOG_ITEMS[20], qty: 1 }  // Es Kopi Susu
-    ],
-    totalItemPrice: 35000,
-    totalJastipFee: 7000,
-    appFee: 1000,
-    grandTotal: 43000,
-    paymentMethod: 'QRIS_UNISMUH',
-    paymentMethodLabel: 'QRIS Unismuh Pay (Instan)',
-    status: 'MENUJU_KAMPUS',
-    meetingPoint: 'Lobby Menara Iqra Unismuh Makassar',
-    createdAt: '11:15 WITA',
-    escrowStatus: 'HELD_IN_ESCROW',
-    trackingHistory: [
-      {
-        step: '1. Buka Order & Titipan Dibuat',
-        timestamp: '11:15 WITA',
-        note: 'Mahasiswa memilih item di warung sekitar Unismuh dan menyepakati ongkos jastip.',
-        done: true
-      },
-      {
-        step: '2. Bayar ke Rekening Bersama (Escrow)',
-        timestamp: '11:18 WITA',
-        note: 'Payment-Service mengamankan dana Rp 43.000 via QRIS Unismuh Pay dalam rekening bersama (Escrow).',
-        done: true
-      },
-      {
-        step: '3. Order Dikunci & Diklaim Jastiper',
-        timestamp: '11:30 WITA',
-        note: 'Pesanan diklaim oleh Jastiper Andi M. Fikri.',
-        done: true
-      },
-      {
-        step: '4. Barang Selesai Dibelikan di Toko/Warung',
-        timestamp: '11:50 WITA',
-        note: 'Jastiper membelikan pesanan di warung sekitar Jl. Sultan Alauddin sesuai pesanan.',
-        done: true
-      },
-      {
-        step: '5. Lacak: Jastiper Menuju Kampus',
-        timestamp: '12:05 WITA',
-        note: 'Tracking-Service mencatat posisi jastiper di depan Gerbang Pintu 1 Unismuh (ETA 3 menit).',
-        done: true
-      },
-      {
-        step: '6. Serah Terima & Saldo Dicairkan',
-        timestamp: '12:15 WITA (Estimasi)',
-        note: 'Pemesan scan QR fisik di titik temu kampus untuk verifikasi dan pelepasan saldo ke jastiper.',
-        done: false
-      }
-    ]
-  },
-
-  // 3. Akun Nurul Mutmainnah (105841102211) - Pesanan Mie Titi + Jus Alpukat
-  '105841102211': {
-    id: 'ORD-20260824-003',
-    orderCode: 'JSTP-UNISMUH-4429',
-    customerName: 'Nurul Mutmainnah',
-    customerProdi: 'S1 Farmasi (105841102211)',
-    sessionId: 'SES-UNISMUH-02',
-    items: [
-      { item: MOCK_CATALOG_ITEMS[3], qty: 1 },  // Mie Titi Makassar
-      { item: MOCK_CATALOG_ITEMS[21], qty: 1 }  // Jus Alpukat Kental
-    ],
-    totalItemPrice: 38000,
-    totalJastipFee: 6000,
-    appFee: 1000,
-    grandTotal: 45000,
-    paymentMethod: 'WALLET_UNISMUH',
-    paymentMethodLabel: 'Saldo Dompet Jastip Unismuh',
-    status: 'ESCROW_DITAMPUNG',
-    meetingPoint: 'Gedung FKIK / Depan Laboratorium Farmasi',
-    createdAt: '13:10 WITA',
-    escrowStatus: 'HELD_IN_ESCROW',
-    trackingHistory: [
-      {
-        step: '1. Buka Order & Titipan Dibuat',
-        timestamp: '13:10 WITA',
-        note: 'Pesanan dibuat oleh Nurul Mutmainnah (105841102211).',
-        done: true
-      },
-      {
-        step: '2. Bayar ke Rekening Bersama (Escrow)',
-        timestamp: '13:12 WITA',
-        note: 'Dana Rp 45.000 berhasil didebet dari Saldo Dompet Jastip dan diamankan di Escrow.',
-        done: true
-      },
-      {
-        step: '3. Menunggu Klaim Jastiper',
-        timestamp: '13:15 WITA',
-        note: 'Pesanan tersedia di Workspace Jastiper untuk diklaim oleh runner yang sedang online.',
-        done: false
-      },
-      {
-        step: '4. Pembelian di Toko/Warung',
-        timestamp: '13:35 WITA',
-        note: 'Jastiper membeli di Mie Titi Talasalapang.',
-        done: false
-      },
-      {
-        step: '5. Jastiper OTW Kampus',
-        timestamp: '13:50 WITA',
-        note: 'Menuju Gedung FKIK.',
-        done: false
-      },
-      {
-        step: '6. Serah Terima & Selesai',
-        timestamp: '14:00 WITA',
-        note: 'Serah terima di Lab Farmasi.',
-        done: false
-      }
-    ]
-  },
-
-  // 4. Akun Aswan (105841114532) - Pesanan Nasi Padang + Brown Sugar Boba
-  '105841114532': {
-    id: 'ORD-20260824-004',
-    orderCode: 'JSTP-UNISMUH-9912',
-    customerName: 'Aswan',
-    customerProdi: 'S1 Teknik Sipil (105841114532)',
-    sessionId: 'SES-UNISMUH-01',
-    items: [
-      { item: MOCK_CATALOG_ITEMS[4], qty: 1 },  // Nasi Padang Rendang
-      { item: MOCK_CATALOG_ITEMS[22], qty: 1 }  // Brown Sugar Boba
-    ],
-    totalItemPrice: 33000,
-    totalJastipFee: 5000,
-    appFee: 1000,
-    grandTotal: 39000,
-    paymentMethod: 'QRIS_UNISMUH',
-    paymentMethodLabel: 'QRIS Unismuh Pay (Instan)',
-    status: 'SAMPAI_DI_TITIK_TEMU',
-    meetingPoint: 'Koridor Gedung Fakultas Teknik Lt. 2',
-    createdAt: '10:45 WITA',
-    escrowStatus: 'HELD_IN_ESCROW',
-    trackingHistory: [
-      {
-        step: '1. Buka Order & Titipan Dibuat',
-        timestamp: '10:45 WITA',
-        note: 'Pesanan dibuat oleh Aswan (105841114532).',
-        done: true
-      },
-      {
-        step: '2. Bayar ke Rekening Bersama (Escrow)',
-        timestamp: '10:47 WITA',
-        note: 'Dana Rp 39.000 diamankan di Rekber Escrow.',
-        done: true
-      },
-      {
-        step: '3. Diklaim oleh Jastiper',
-        timestamp: '11:00 WITA',
-        note: 'Pesanan diklaim oleh Jastiper Andi M. Fikri.',
-        done: true
-      },
-      {
-        step: '4. Pembelian Selesai',
-        timestamp: '11:20 WITA',
-        note: 'Makanan dibeli di RM Padang Alauddin.',
-        done: true
-      },
-      {
-        step: '5. Jastiper Menuju Kampus',
-        timestamp: '11:35 WITA',
-        note: 'Jastiper telah memasuki area kampus Unismuh.',
-        done: true
-      },
-      {
-        step: '6. Tiba di Titik Temu (Menunggu Konfirmasi QR)',
-        timestamp: '11:42 WITA',
-        note: 'Jastiper menunggu di Koridor FT Lt. 2. Silakan scan QR untuk serah terima.',
-        done: true
-      }
-    ]
-  },
-
-  // 5. Akun Tri Wahyuni (105841107755) - Pesanan Pallubasa + Es Pisang Ijo
-  '105841107755': {
-    id: 'ORD-20260824-005',
-    orderCode: 'JSTP-UNISMUH-3388',
-    customerName: 'Tri Wahyuni',
-    customerProdi: 'S1 Manajemen (105841107755)',
-    sessionId: 'SES-UNISMUH-01',
-    items: [
-      { item: MOCK_CATALOG_ITEMS[2], qty: 1 },  // Pallubasa Daging Telur
-      { item: MOCK_CATALOG_ITEMS[19], qty: 1 }  // Es Pisang Ijo
-    ],
-    totalItemPrice: 40000,
-    totalJastipFee: 6000,
-    appFee: 1000,
-    grandTotal: 47000,
-    paymentMethod: 'VA_BSI',
-    paymentMethodLabel: 'Virtual Account Bank BSI',
-    status: 'ESCROW_DITAMPUNG',
-    meetingPoint: 'Perpustakaan Pusat Unismuh Lt. 1 (Ruang Baca)',
-    createdAt: '14:20 WITA',
-    escrowStatus: 'HELD_IN_ESCROW',
-    trackingHistory: [
-      {
-        step: '1. Buka Order & Titipan Dibuat',
-        timestamp: '14:20 WITA',
-        note: 'Pesanan dibuat oleh Tri Wahyuni (105841107755).',
-        done: true
-      },
-      {
-        step: '2. Bayar ke Rekening Bersama (Escrow)',
-        timestamp: '14:22 WITA',
-        note: 'Pembayaran VA BSI Rp 47.000 sukses dan dana ditahan di Rekber Escrow.',
-        done: true
-      },
-      {
-        step: '3. Menunggu Klaim Jastiper',
-        timestamp: '14:25 WITA',
-        note: 'Pesanan tersedia di Workspace Jastiper untuk diklaim.',
-        done: false
-      },
-      {
-        step: '4. Pembelian di Pallubasa Serigala',
-        timestamp: '14:50 WITA',
-        note: 'Jastiper membelikan pesanan di warung mitra.',
-        done: false
-      },
-      {
-        step: '5. Menuju Kampus',
-        timestamp: '15:05 WITA',
-        note: 'Dalam perjalanan ke Perpustakaan Pusat.',
-        done: false
-      },
-      {
-        step: '6. Serah Terima',
-        timestamp: '15:15 WITA',
-        note: 'Titik temu di Ruang Baca Perpus.',
-        done: false
-      }
-    ]
-  }
+export const INITIAL_DEMO_ORDER: JastipOrder = {
+  id: 'ORD-20260821-009',
+  orderCode: 'JSTP-UNISMUH-8841',
+  customerName: 'Ahmad Fauzan',
+  customerProdi: 'S1 Teknik Elektro (105841104423)',
+  sessionId: 'SES-UNISMUH-01',
+  items: [
+    { item: MOCK_CATALOG_ITEMS[0], qty: 1 }, // Ayam Geprek
+    { item: MOCK_CATALOG_ITEMS[20], qty: 1 }  // Es Kopi Susu
+  ],
+  totalItemPrice: 35000,
+  totalJastipFee: 7000,
+  appFee: 1000,
+  grandTotal: 43000,
+  paymentMethod: 'QRIS_UNISMUH',
+  paymentMethodLabel: 'QRIS Unismuh Pay (Instan)',
+  status: 'MENUJU_KAMPUS',
+  meetingPoint: 'Lobby Menara Iqra Unismuh Makassar',
+  createdAt: '11:15 WITA',
+  escrowStatus: 'HELD_IN_ESCROW',
+  trackingHistory: [
+    {
+      step: '1. Buka Order & Titipan Dibuat',
+      timestamp: '11:15 WITA',
+      note: 'Mahasiswa memilih item di warung sekitar Unismuh dan menyepakati ongkos jastip.',
+      done: true
+    },
+    {
+      step: '2. Bayar ke Rekening Bersama (Escrow)',
+      timestamp: '11:18 WITA',
+      note: 'Payment-Service mengamankan dana Rp 43.000 via QRIS Unismuh Pay dalam rekening bersama (Escrow).',
+      done: true
+    },
+    {
+      step: '3. Order Dikunci (Closing Time Locked)',
+      timestamp: '11:30 WITA',
+      note: 'Order-Service mengunci slot sesi Jastiper Andi M. Fikri (Maksimal 5.0 kg).',
+      done: true
+    },
+    {
+      step: '4. Barang Selesai Dibelikan di Toko/Warung',
+      timestamp: '11:50 WITA',
+      note: 'Jastiper membelikan pesanan di warung sekitar Jl. Sultan Alauddin sesuai pesanan.',
+      done: true
+    },
+    {
+      step: '5. Lacak: Jastiper Menuju Kampus',
+      timestamp: '12:05 WITA',
+      note: 'Tracking-Service mencatat posisi jastiper di depan Gerbang Pintu 1 Unismuh (ETA 3 menit).',
+      done: true
+    },
+    {
+      step: '6. Serah Terima & Saldo Dicairkan',
+      timestamp: '12:15 WITA (Estimasi)',
+      note: 'Pemesan scan QR fisik di titik temu kampus untuk verifikasi dan pelepasan saldo ke jastiper.',
+      done: false
+    }
+  ]
 };
-
-export const INITIAL_DEMO_ORDER: JastipOrder = MOCK_STUDENT_ORDERS['105841108319'];
-

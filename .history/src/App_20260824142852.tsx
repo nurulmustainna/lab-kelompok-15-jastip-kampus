@@ -319,7 +319,6 @@ export default function App() {
           sessions={sessions}
           currentOrder={currentOrder}
           studentAccounts={studentAccounts}
-          studentOrders={studentOrders}
           onUpdateCatalogItem={(updatedItem) => {
             setCatalogItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
             showToast(`Katalog "${updatedItem.name}" berhasil diperbarui.`);
@@ -420,8 +419,6 @@ export default function App() {
                   onNavigateTab={setActiveTab}
                   currentRole={userRole}
                   onShowToast={showToast}
-                  isOrderDeleted={isOrderDeletedByBuyer()}
-                  onDeleteOrder={handleDeleteOrder}
                 />
               )}
 

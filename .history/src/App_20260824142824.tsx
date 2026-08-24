@@ -246,24 +246,6 @@ export default function App() {
     showToast(`Top-Up Berhasil! Saldo dompet jastip bertambah Rp ${amount.toLocaleString('id-ID')}`);
   };
 
-  // Handle buyer deleting a completed order
-  const handleDeleteOrder = (orderId: string) => {
-    setDeletedOrderIds(prev => {
-      const updated = { ...prev };
-      if (!updated[currentStudent.nim]) {
-        updated[currentStudent.nim] = new Set();
-      }
-      updated[currentStudent.nim].add(orderId);
-      return updated;
-    });
-    showToast(`Pesanan #${currentOrder.orderCode} telah dihapus dari daftar Pesanan Saya.`);
-  };
-
-  // Check if current order is deleted by buyer
-  const isOrderDeletedByBuyer = () => {
-    return deletedOrderIds[currentStudent.nim]?.has(currentOrder.id) ?? false;
-  };
-
   return (
     <div className="min-h-screen text-slate-900 font-sans selection:bg-emerald-600 selection:text-white">
       
@@ -319,7 +301,6 @@ export default function App() {
           sessions={sessions}
           currentOrder={currentOrder}
           studentAccounts={studentAccounts}
-          studentOrders={studentOrders}
           onUpdateCatalogItem={(updatedItem) => {
             setCatalogItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
             showToast(`Katalog "${updatedItem.name}" berhasil diperbarui.`);
@@ -420,8 +401,6 @@ export default function App() {
                   onNavigateTab={setActiveTab}
                   currentRole={userRole}
                   onShowToast={showToast}
-                  isOrderDeleted={isOrderDeletedByBuyer()}
-                  onDeleteOrder={handleDeleteOrder}
                 />
               )}
 

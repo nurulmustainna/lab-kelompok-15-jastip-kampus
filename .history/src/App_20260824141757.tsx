@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TopAcademicBanner } from './components/TopAcademicBanner';
 import { MainPortalHeader, UserRole } from './components/MainPortalHeader';
 import { PortalNavbar, PortalTab } from './components/PortalNavbar';
@@ -51,62 +51,10 @@ export default function App() {
   };
 
   // Distinct Student Orders map
-  // Initialize from localStorage if available, otherwise use MOCK_STUDENT_ORDERS
-  const [studentOrders, setStudentOrders] = useState<Record<string, JastipOrder>>(() => {
-    try {
-      const stored = localStorage.getItem('jastip_orders');
-      if (stored) {
-        return JSON.parse(stored) as Record<string, JastipOrder>;
-      }
-    } catch (e) {
-      console.error('Failed to load orders from localStorage:', e);
-    }
-    return MOCK_STUDENT_ORDERS;
-  });
+  const [studentOrders, setStudentOrders] = useState<Record<string, JastipOrder>>(MOCK_STUDENT_ORDERS);
   const [currentOrder, setCurrentOrder] = useState<JastipOrder>(
     MOCK_STUDENT_ORDERS[MOCK_STUDENT_ACCOUNTS[0].nim] || INITIAL_DEMO_ORDER
   );
-
-  // Persist studentOrders to localStorage whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem('jastip_orders', JSON.stringify(studentOrders));
-    } catch (e) {
-      console.error('Failed to save orders to localStorage:', e);
-    }
-  }, [studentOrders]);
-
-  // Track deleted orders per student (nim -> Set of deleted order IDs)
-  const [deletedOrderIds, setDeletedOrderIds] = useState<Record<string, Set<string>>>(() => {
-    try {
-      const stored = localStorage.getItem('jastip_deleted_orders');
-      if (stored) {
-        const parsed = JSON.parse(stored) as Record<string, string[]>;
-        // Convert arrays back to Sets
-        const result: Record<string, Set<string>> = {};
-        for (const [nim, ids] of Object.entries(parsed)) {
-          result[nim] = new Set(ids);
-        }
-        return result;
-      }
-    } catch (e) {
-      console.error('Failed to load deleted orders from localStorage:', e);
-    }
-    return {};
-  });
-
-  // Persist deleted orders to localStorage
-  useEffect(() => {
-    try {
-      const toSave: Record<string, string[]> = {};
-      for (const [nim, ids] of Object.entries(deletedOrderIds)) {
-        toSave[nim] = Array.from(ids);
-      }
-      localStorage.setItem('jastip_deleted_orders', JSON.stringify(toSave));
-    } catch (e) {
-      console.error('Failed to save deleted orders to localStorage:', e);
-    }
-  }, [deletedOrderIds]);
   
   // Update order handler that synchronizes to studentOrders state
   const handleUpdateCurrentOrder = (updated: JastipOrder) => {
@@ -246,24 +194,6 @@ export default function App() {
     showToast(`Top-Up Berhasil! Saldo dompet jastip bertambah Rp ${amount.toLocaleString('id-ID')}`);
   };
 
-  // Handle buyer deleting a completed order
-  const handleDeleteOrder = (orderId: string) => {
-    setDeletedOrderIds(prev => {
-      const updated = { ...prev };
-      if (!updated[currentStudent.nim]) {
-        updated[currentStudent.nim] = new Set();
-      }
-      updated[currentStudent.nim].add(orderId);
-      return updated;
-    });
-    showToast(`Pesanan #${currentOrder.orderCode} telah dihapus dari daftar Pesanan Saya.`);
-  };
-
-  // Check if current order is deleted by buyer
-  const isOrderDeletedByBuyer = () => {
-    return deletedOrderIds[currentStudent.nim]?.has(currentOrder.id) ?? false;
-  };
-
   return (
     <div className="min-h-screen text-slate-900 font-sans selection:bg-emerald-600 selection:text-white">
       
@@ -319,7 +249,6 @@ export default function App() {
           sessions={sessions}
           currentOrder={currentOrder}
           studentAccounts={studentAccounts}
-          studentOrders={studentOrders}
           onUpdateCatalogItem={(updatedItem) => {
             setCatalogItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
             showToast(`Katalog "${updatedItem.name}" berhasil diperbarui.`);
@@ -420,8 +349,6 @@ export default function App() {
                   onNavigateTab={setActiveTab}
                   currentRole={userRole}
                   onShowToast={showToast}
-                  isOrderDeleted={isOrderDeletedByBuyer()}
-                  onDeleteOrder={handleDeleteOrder}
                 />
               )}
 

@@ -258,7 +258,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
             )}
 
             {/* Step Simulator Progression button for demo */}
-            {currentOrder.status !== 'SELESAI_DITERIMA' && (
             <div className="pt-2 border-t border-emerald-50 space-y-2">
               <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
                 Simulasi Alur Microservices Jastip:
@@ -277,7 +276,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
                 </span>
               </button>
             </div>
-            )}
           </div>
 
           {/* Quick Tracking Stepper */}
@@ -372,9 +370,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
             </button>
           </div>
         </div>
-      )}
-
-      </>
       )}
 
     </div>

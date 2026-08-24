@@ -1032,66 +1032,101 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <tr>
                         <th className="p-3.5">Order ID</th>
                         <th className="p-3.5">Pemesan (NIM)</th>
+                        <th className="p-3.5">Runner / Jastiper</th>
                         <th className="p-3.5">Item Belanja</th>
+                        <th className="p-3.5">Lokasi Antar</th>
                         <th className="p-3.5">Total & Ongkir</th>
                         <th className="p-3.5">Status</th>
                         <th className="p-3.5 text-right">Aksi SRE</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#1B4D3E]/60 text-slate-200">
-                      {Object.entries(studentOrders).length > 0 ? (
-                        Object.entries(studentOrders).map(([nim, order]) => {
-                          const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-                            'MENUNGGU_PEMBAYARAN': { bg: 'bg-yellow-950', text: 'text-yellow-300', border: 'border-yellow-800' },
-                            'ESCROW_DITAMPUNG': { bg: 'bg-blue-950', text: 'text-blue-300', border: 'border-blue-800' },
-                            'DIBELI_JASTIPER': { bg: 'bg-purple-950', text: 'text-purple-300', border: 'border-purple-800' },
-                            'MENUJU_KAMPUS': { bg: 'bg-orange-950', text: 'text-orange-300', border: 'border-orange-800' },
-                            'SAMPAI_DI_TITIK_TEMU': { bg: 'bg-cyan-950', text: 'text-cyan-300', border: 'border-cyan-800' },
-                            'SELESAI_DITERIMA': { bg: 'bg-emerald-900/60', text: 'text-[#10B981]', border: 'border-emerald-700' }
-                          };
-                          const colors = statusColors[order.status] || { bg: 'bg-slate-900', text: 'text-slate-300', border: 'border-slate-700' };
-                          
-                          return (
-                            <tr key={nim} className="hover:bg-[#13382D] transition-colors">
-                              <td className="p-3.5 font-mono font-bold text-[#10B981]">#{order.id || `ORD-${nim.slice(-4)}`}</td>
-                              <td className="p-3.5">
-                                <div className="font-bold text-white">{order.buyerName || 'Unknown'}</div>
-                                <span className="text-[10px] text-slate-400 font-mono">{nim}</span>
-                              </td>
-                              <td className="p-3.5 font-medium">{order.itemName || 'No items'}</td>
-                              <td className="p-3.5">
-                                <div className="font-bold text-white">
-                                  Rp {(order.total || 0).toLocaleString('id-ID')}
-                                </div>
-                                <span className="text-[10px] text-[#34D399]">
-                                  Ongkir Rp {(order.shippingCost || 0).toLocaleString('id-ID')}
-                                </span>
-                              </td>
-                              <td className="p-3.5">
-                                <span className={`${colors.bg} ${colors.text} border ${colors.border} px-2 py-0.5 rounded-full text-[10px] font-bold`}>
-                                  {order.status?.replace(/_/g, ' ') || 'UNKNOWN'}
-                                </span>
-                              </td>
-                              <td className="p-3.5 text-right">
-                                <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
-                                  Audit Trace
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="p-3.5 text-center text-slate-400">
-                            Tidak ada pesanan sampai saat ini
-                          </td>
-                        </tr>
-                      )}
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8821</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Ahmad Fauzan</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841104423 (Informatika)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Andi Muhammad Fikri</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-01 (Kantin Menara)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Ayam Geprek + Es Teh</td>
+                        <td className="p-3.5">Lab Komputer Lt.4</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 43.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 7.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-emerald-950 text-[#34D399] border border-[#10B981]/40 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            DIANTAR
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
+                            Audit Trace
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8822</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Nurhaeni</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841101221 (FKIP)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Rizki Pratama</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-02 (Toko Buku)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Paket ATK & Binder Spiral</td>
+                        <td className="p-3.5">R.302 Gedung FKIP</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 28.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 5.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-blue-950 text-blue-300 border border-blue-800 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            DIPROSES
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#10B981] hover:bg-[#059669] text-[#061A14] font-black rounded-lg text-[10px] transition-all">
+                            Audit Trace
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-[#13382D] transition-colors">
+                        <td className="p-3.5 font-mono font-bold text-[#10B981]">#ORD-8820</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Fahmi Ahmad</div>
+                          <span className="text-[10px] text-slate-400 font-mono">105841108822 (Kedokteran)</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-[#A7F3D0]">Andi Muhammad Fikri</div>
+                          <span className="text-[10px] text-slate-400 font-mono">RUNNER-01 (Kantin Menara)</span>
+                        </td>
+                        <td className="p-3.5 font-medium">Nasi Kuning Porsi Jumbo (x2)</td>
+                        <td className="p-3.5">Perpustakaan Lt.2</td>
+                        <td className="p-3.5">
+                          <div className="font-bold text-white">Rp 35.000</div>
+                          <span className="text-[10px] text-[#34D399]">Ongkir Rp 6.000</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="bg-emerald-900/60 text-[#10B981] border border-emerald-700 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                            SELESAI (QR OK)
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button type="button" className="px-2.5 py-1 bg-[#061A14] hover:bg-[#1B4D3E] text-[#34D399] font-bold rounded-lg text-[10px] border border-[#1B4D3E] transition-all">
+                            Lihat Escrow
+                          </button>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-
-                {/* Search & Filter (if needed for future) */}
               </div>
             </div>
           )}

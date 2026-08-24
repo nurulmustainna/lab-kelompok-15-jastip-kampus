@@ -81,34 +81,11 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
   return (
     <div className="space-y-6 animate-fade-in">
       
-      {/* Show message if order is deleted */}
-      {isOrderDeleted && (
-        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-amber-200 shadow-sm">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="font-bold text-amber-900">Pesanan Telah Dihapus</h3>
-              <p className="text-xs text-amber-700 mt-1">
-                Pesanan #{currentOrder.orderCode} telah dihapus dari daftar Pesanan Saya. Anda bisa membuat pesanan baru.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Only show order details if not deleted */}
-      {!isOrderDeleted && (
-      <>
-      
       {/* Header Banner */}
       <div className="bg-white p-5 sm:p-6 rounded-3xl border border-emerald-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
-            currentOrder.status === 'SELESAI_DITERIMA' 
-              ? 'text-emerald-700 bg-emerald-100 border-emerald-200' 
-              : 'text-emerald-800 bg-emerald-100 border-emerald-200'
-          }`}>
-            {currentOrder.status === 'SELESAI_DITERIMA' ? 'Pesanan Selesai' : 'Pesanan Aktif Anda'}
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            Pesanan Aktif Anda
           </span>
           <h2 className="text-xl sm:text-2xl font-bold text-emerald-950 mt-1">
             Order #{currentOrder.orderCode}
@@ -119,24 +96,13 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {currentOrder.status === 'SELESAI_DITERIMA' && onDeleteOrder && (
-            <button
-              onClick={() => onDeleteOrder(currentOrder.id)}
-              className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm border border-red-200"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Hapus Pesanan</span>
-            </button>
-          )}
-          {currentOrder.status !== 'SELESAI_DITERIMA' && (
-            <button
-              onClick={() => onNavigateTab('tracking')}
-              className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
-            >
-              <MapPin className="w-3.5 h-3.5 text-emerald-200" />
-              <span>Lihat Live Map Tracking</span>
-            </button>
-          )}
+          <button
+            onClick={() => onNavigateTab('tracking')}
+            className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+          >
+            <MapPin className="w-3.5 h-3.5 text-emerald-200" />
+            <span>Lihat Live Map Tracking</span>
+          </button>
         </div>
       </div>
 
@@ -258,7 +224,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
             )}
 
             {/* Step Simulator Progression button for demo */}
-            {currentOrder.status !== 'SELESAI_DITERIMA' && (
             <div className="pt-2 border-t border-emerald-50 space-y-2">
               <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
                 Simulasi Alur Microservices Jastip:
@@ -277,7 +242,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
                 </span>
               </button>
             </div>
-            )}
           </div>
 
           {/* Quick Tracking Stepper */}
@@ -372,9 +336,6 @@ export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
             </button>
           </div>
         </div>
-      )}
-
-      </>
       )}
 
     </div>

@@ -285,16 +285,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       console.log('=== REGISTER DEBUG ===');
       console.log('User identifier (email):', cleanEmail);
       console.log('User identifier (nim):', cleanNim);
-      console.log('Storage method: state callback (onAddStudent)');
-      console.log('Total accounts to be saved:', studentAccounts.length + 1);
-      console.log('New account created:', newAccount.name, `(${newAccount.email})`);
+      console.log('Storage method: localStorage + state callback');
+      console.log('Total accounts to save:', studentAccounts.length + 1);
 
-      // SAVE TO STATE (App.tsx will handle localStorage persistence)
+      // SAVE TO STATE AND LOCALSTORAGE
       if (onAddStudent) {
         onAddStudent(newAccount);
-        console.log('onAddStudent callback called - App.tsx will persist to localStorage');
-      } else {
-        console.warn('onAddStudent callback not provided!');
+        console.log('onAddStudent callback called');
+      }
+      
+      // Also persist to localStorage
+      try {
+        const allAccounts = [...studentAccounts, newAccount];
+        localStorage.setItem('jastip_users', JSON.stringify(allAccounts));
+        console.log('Saved to localStorage key: jastip_users');
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
       }
 
       setRegSuccess(true);
@@ -507,13 +513,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   Form pendaftaran akun resmi mahasiswa & kurir mitra jastip Unismuh.
                 </p>
               </div>
-
-              {errorMessage && (
-                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-semibold flex items-center gap-2 animate-in fade-in">
-                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                  <span>{errorMessage}</span>
-                </div>
-              )}
 
               {regSuccess && (
                 <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-xl text-xs font-bold flex items-center gap-2">

@@ -5,7 +5,7 @@ import {
   RefreshCw, X, Zap, Flame, Store, ShoppingBag, 
   AlertCircle, ChevronRight, User, ArrowUpRight, Eye, Lock, Unlock
 } from 'lucide-react';
-import { JastipSession, JastipOrder, StudentAccount } from '../types';
+import { JastipSession, JastipOrder } from '../types';
 import { RulesSection } from './RulesSection';
 
 interface JastiperWorkspaceProps {
@@ -16,7 +16,6 @@ interface JastiperWorkspaceProps {
   onUpdateOrder?: (order: JastipOrder) => void;
   allStudentOrders?: Record<string, JastipOrder>;
   onUpdateStudentOrder?: (studentNim: string, order: JastipOrder) => void;
-  currentStudent?: StudentAccount;
 }
 
 export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
@@ -26,8 +25,7 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
   currentOrder: _currentOrder,
   onUpdateOrder: _onUpdateOrder,
   allStudentOrders = {},
-  onUpdateStudentOrder,
-  currentStudent
+  onUpdateStudentOrder
 }) => {
   // === STATE MANAGEMENT ===
   
@@ -268,9 +266,9 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
       setIsSubmittingSession(false);
       const newSession: JastipSession = {
         id: `SES-CUSTOM-${Date.now()}`,
-        jastiperName: currentStudent?.name || 'Andi Muhammad Fikri',
-        jastiperProdi: currentStudent?.prodi || 'S1 Teknik Informatika Unismuh',
-        jastiperAvatar: currentStudent?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+        jastiperName: 'Andi Muhammad Fikri',
+        jastiperProdi: 'S1 Teknik Informatika Unismuh',
+        jastiperAvatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
         routeFrom: routeInput.includes('ke') ? routeInput.split('ke')[0].trim() : 'Kantin Menara Iqra',
         routeTo: routeInput.includes('ke') ? routeInput.split('ke')[1].trim() : 'Gedung FKIP Unismuh',
         meetingPoint: 'Lobby Menara Iqra Lt.1',
@@ -321,7 +319,7 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
         <div className="flex items-start sm:items-center gap-4 z-10">
           <div className="relative">
             <img 
-              src={currentStudent?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'} 
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80" 
               alt="Avatar Jastiper" 
               referrerPolicy="no-referrer"
               className="w-16 h-16 rounded-2xl object-cover border-2 border-[#10b981] shadow-md"
@@ -338,14 +336,14 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
                 Mitra Resmi Jastip Kampus
               </span>
               <span className="text-[10px] bg-emerald-900 text-emerald-200 px-2 py-0.5 rounded-md font-mono border border-emerald-700">
-                NIM: {currentStudent?.nim || '105841104423'}
+                NIM: 105841104423
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Workspace Mitra Jasa Titip (Jastiper)
             </h1>
             <p className="text-xs text-emerald-200">
-              Selamat bertugas, <strong>{currentStudent?.name || 'Andi Muhammad Fikri'}</strong> ({currentStudent?.prodi || 'Teknik Informatika'}). Kelola pesanan dengan sistem escrow aman!
+              Selamat bertugas, <strong>Andi Muhammad Fikri</strong> (Teknik Informatika). Kelola pesanan dengan sistem escrow aman!
             </p>
           </div>
         </div>

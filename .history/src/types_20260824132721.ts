@@ -93,7 +93,6 @@ export interface StudentAccount {
   nim: string;
   name: string;
   email: string;
-  password: string;
   faculty: string;
   prodi: string;
   avatar: string;

@@ -285,16 +285,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       console.log('=== REGISTER DEBUG ===');
       console.log('User identifier (email):', cleanEmail);
       console.log('User identifier (nim):', cleanNim);
-      console.log('Storage method: state callback (onAddStudent)');
-      console.log('Total accounts to be saved:', studentAccounts.length + 1);
-      console.log('New account created:', newAccount.name, `(${newAccount.email})`);
+      console.log('Storage method: localStorage + state callback');
+      console.log('Total accounts to save:', studentAccounts.length + 1);
 
-      // SAVE TO STATE (App.tsx will handle localStorage persistence)
+      // SAVE TO STATE AND LOCALSTORAGE
       if (onAddStudent) {
         onAddStudent(newAccount);
-        console.log('onAddStudent callback called - App.tsx will persist to localStorage');
-      } else {
-        console.warn('onAddStudent callback not provided!');
+        console.log('onAddStudent callback called');
+      }
+      
+      // Also persist to localStorage
+      try {
+        const allAccounts = [...studentAccounts, newAccount];
+        localStorage.setItem('jastip_users', JSON.stringify(allAccounts));
+        console.log('Saved to localStorage key: jastip_users');
+      } catch (e) {
+        console.error('Failed to save to localStorage:', e);
       }
 
       setRegSuccess(true);

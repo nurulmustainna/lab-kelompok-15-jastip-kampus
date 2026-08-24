@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   ShoppingBag, LogIn, UserPlus, ArrowRight, CheckCircle2, ShieldCheck, 
   Clock, Zap, Sparkles, ChevronRight, HelpCircle, ChevronDown, 
@@ -18,17 +18,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const toggleFaq = (idx: number) => {
     setActiveFaq(activeFaq === idx ? null : idx);
@@ -114,11 +103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         2. NAVBAR UTAMA (TOP NAVIGATION)
         ========================================================================
       */}
-      <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        isScrolled 
-          ? 'bg-[#0D1117] backdrop-blur-lg shadow-2xl border-b border-[#10B981]/50' 
-          : 'bg-transparent backdrop-blur-none border-b border-transparent'
-      }`}>
+      <header className="sticky top-0 z-40 bg-[#0D1117]/85 backdrop-blur-md border-b border-emerald-950/60 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-18">
             
@@ -169,7 +154,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               {/* Tombol Masuk (Hijau Solid dengan icon Login) */}
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('LOGIN_FORM')}
+                onClick={() => onOpenAuthModal('CHOICE')}
                 className="px-4.5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-emerald-950 flex items-center gap-2 transition-all active:scale-95"
               >
                 <LogIn className="w-4 h-4" />
@@ -179,11 +164,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               {/* Tombol Daftar (Putih / Light Button) */}
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('REGISTER')}
+                onClick={() => onOpenAuthModal('REGISTER_MITRA')}
                 className="px-4.5 py-2.5 bg-white hover:bg-slate-100 text-slate-900 font-black text-xs sm:text-sm rounded-xl shadow-md transition-all active:scale-95 flex items-center gap-2"
               >
                 <UserPlus className="w-4 h-4 text-slate-800" />
                 <span>Daftar</span>
+              </button>
+
+              {/* Quick direct Portal view toggle */}
+              <button
+                type="button"
+                onClick={onEnterDashboard}
+                className="px-3.5 py-2.5 bg-[#004D40]/80 hover:bg-[#004D40] text-[#A7F3D0] border border-[#10B981]/30 font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all"
+                title="Buka Portal Dashboard"
+              >
+                <span>Portal App</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
@@ -191,7 +187,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="flex sm:hidden items-center gap-2">
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('LOGIN_FORM')}
+                onClick={() => onOpenAuthModal('CHOICE')}
                 className="px-3 py-1.5 bg-[#10B981] text-white font-bold text-xs rounded-lg flex items-center gap-1"
               >
                 <LogIn className="w-3.5 h-3.5" />
@@ -208,8 +204,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         3. HERO SECTION (BAGIAN UTAMA)
         ========================================================================
       */}
-      <section className="relative z-10 min-h-screen pt-20 pb-16 lg:pt-32 lg:pb-24 px-4 sm:px-6 lg:px-8 flex items-center">
-        <div className="max-w-7xl mx-auto w-full">
+      <section className="relative z-10 pt-12 pb-16 lg:pt-20 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
           
@@ -235,7 +230,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* [Icon Enter] Tombol "Masuk" (Warna Hijau Solid) */}
             <button
               type="button"
-              onClick={() => onOpenAuthModal('LOGIN_FORM')}
+              onClick={() => onOpenAuthModal('CHOICE')}
               className="px-7 py-3.5 bg-[#10B981] hover:bg-[#059669] text-white font-black text-sm sm:text-base rounded-2xl shadow-xl shadow-emerald-950/60 flex items-center gap-2.5 transition-all hover:scale-105 active:scale-95"
             >
               <LogIn className="w-5 h-5" />
@@ -245,11 +240,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* [Icon UserPlus] Tombol "Daftar Baru" (Warna Putih Solid) */}
             <button
               type="button"
-              onClick={() => onOpenAuthModal('REGISTER')}
+              onClick={() => onOpenAuthModal('REGISTER_MITRA')}
               className="px-7 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-black text-sm sm:text-base rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2.5"
             >
               <UserPlus className="w-5 h-5 text-slate-900" />
               <span>Daftar Baru</span>
+            </button>
+
+            {/* Direct Dashboard Entry */}
+            <button
+              type="button"
+              onClick={onEnterDashboard}
+              className="px-6 py-3.5 bg-[#004D40] hover:bg-[#003d33] border border-[#10B981]/50 text-[#A7F3D0] font-bold text-sm sm:text-base rounded-2xl flex items-center gap-2 transition-all hover:border-[#10B981]"
+            >
+              <span>Buka Portal Jastip</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
 
           </div>
@@ -298,7 +303,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           </div>
 
-        </div>
         </div>
 
       </section>
@@ -443,19 +447,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="pt-3 flex flex-wrap justify-center gap-3">
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('LOGIN_FORM')}
-                className="px-6 py-3 bg-white text-slate-900 font-black text-xs sm:text-sm rounded-xl shadow-lg hover:bg-slate-100 transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                onClick={() => onOpenAuthModal('CHOICE')}
+                className="px-6 py-3 bg-white text-slate-900 font-black text-xs sm:text-sm rounded-xl shadow-lg hover:bg-slate-100 transition-all active:scale-95"
               >
-                <LogIn className="w-4 h-4 text-slate-800" />
-                <span>Mulai Masuk Akun</span>
+                Mulai Masuk Akun
               </button>
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('REGISTER')}
-                className="px-6 py-3 bg-[#10B981] text-white font-black text-xs sm:text-sm rounded-xl shadow-lg hover:bg-[#059669] transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                onClick={() => onOpenAuthModal('REGISTER_MITRA')}
+                className="px-6 py-3 bg-[#10B981] text-white font-black text-xs sm:text-sm rounded-xl shadow-lg hover:bg-[#059669] transition-all active:scale-95"
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Daftar Pengguna Baru</span>
+                Daftar Mitra Jastip
               </button>
             </div>
           </div>

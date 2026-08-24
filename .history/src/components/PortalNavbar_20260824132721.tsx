@@ -11,8 +11,6 @@ export type PortalTab =
   | 'sessions' 
   | 'escrow' 
   | 'tracking' 
-  | 'microservices'
-  | 'data-explorer'
   | 'rules';
 
 interface PortalNavbarProps {
@@ -30,7 +28,7 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
 }) => {
   // Define tabs specifically tailored to the user's active role
   const mahasiswaTabs = [
-    { id: 'sessions' as const, label: 'Layanan Jasa Titip', icon: Bike, badge: 'Buka' },
+    { id: 'sessions' as const, label: 'Sesi Titipan (Pilih Runner)', icon: Bike, badge: '3 Sesi' },
     { id: 'catalog' as const, label: 'Katalog Jastip (Buka Order)', icon: ShoppingBag, badge: '50 Item' },
     { id: 'my-orders' as const, label: 'Pesanan Saya (Tawar & Bayar)', icon: FileText, badge: orderCount > 0 ? `${orderCount} Aktif` : undefined },
     { id: 'tracking' as const, label: 'Lacak Real-Time & Titik Temu', icon: MapPin, badge: 'Live' },
