@@ -83,3 +83,26 @@ Dokumen ini mencatat interaksi dengan AI / GitHub Copilot selama pengerjaan proy
 - **Diterima**: Copilot men-generate `sub.subscribe("order.created", (msg) => { const order = JSON.parse(msg); ... })` dalam IIFE async.
 - **Ditolak & alasan**: Copilot memanggil `JSON.parse(msg)` langsung tanpa proteksi. Jika ada publisher nakal yang mengirim string bukan-JSON, seluruh proses subscriber crash dan semua notifikasi selanjutnya tidak terproses. Saya wrap dengan `try/catch` di dalam callback dan log pesan yang gagal di-parse tanpa menghentikan proses.
 - **Verifikasi**: Kirim pesan `"bukan-json"` langsung ke channel Redis → subscriber mencetak peringatan parse error dan tetap berjalan menerima event berikutnya.
+
+---
+
+### QA, Load-Test & Dokumentasi · Lapisan 1 · Entri 1
+- **Konteks**: Menulis smoke test terminal dengan `node --test` untuk jalur kritis `order-service` sesuai `openapi.yaml`.
+- **Prompt**: "Tulis smoke test Node bawaan untuk endpoint `GET /health` dan `POST /orders` yang memverifikasi 201 untuk request sah, 400 untuk input salah, dan 404 untuk item yang tidak ada."
+- **Diterima**: Struktur `node:test` dengan `fetch`, `assert.equal`, dan payload yang mengikuti kontrak aktual `{ itemId, qty }`.
+- **Ditolak & alasan**: Saran contoh generik memakai body `{ productId, qty, buyer }` saya tolak karena tidak cocok dengan spesifikasi repo ini. Kalau dipakai mentah-mentah, test akan gagal palsu dan tidak lagi menguji API yang sebenarnya.
+- **Verifikasi**: `npm run test:services` menghasilkan `tests 5`, `pass 5`, `fail 0`.
+
+### QA, Load-Test & Dokumentasi · Lapisan 2 · Entri 2
+- **Konteks**: Menulis uji rebutan yang membuktikan stok tidak oversell saat `POST /orders` ditembak serentak.
+- **Prompt**: "Buat uji `node:test` yang menembakkan ratusan request paralel ke `POST /orders`, lalu periksa jumlah sukses, jumlah 409, dan sisa stok akhir."
+- **Diterima**: Pola `Promise.all` untuk menembak request bersamaan, lalu asersi `sukses <= stokAwal`, `sisa >= 0`, dan `sukses + ditolak === jumlahPenyerbu`.
+- **Ditolak & alasan**: Saya tolak pola uji yang menganggap `409` sebagai kegagalan. Pada sistem rebutan, `409 stok habis` adalah perilaku benar; yang gagal justru jika ada `5xx`, stok minus, atau sukses melebihi stok awal.
+- **Verifikasi**: Run terminal mencetak `stokAwal=50 sukses=50 ditolak=150 sisa=0`, lalu test lulus.
+
+### QA, Load-Test & Dokumentasi · Lapisan 3 · Entri 3
+- **Konteks**: Menyusun `LAPORAN.md` dan ringkasan hasil load test dari artefak JSON yang benar-benar diukur.
+- **Prompt**: "Susun laporan tiga lapisan dari hasil smoke test, load test, dan dokumentasi arsitektur yang sudah ada."
+- **Diterima**: Kerangka laporan terpadu, daftar perintah terminal yang bisa diulang, dan ringkasan angka dari `artifacts/loadtest/latest.json`.
+- **Ditolak & alasan**: Saya tolak mengisi angka baseline sebelum perubahan yang tidak terekam dengan perintah identik. Menebak baseline akan membuat laporan terlihat penuh tetapi tidak jujur; lebih baik menandai gap pengukuran secara eksplisit.
+- **Verifikasi**: Angka pada laporan dicocokkan langsung terhadap file artefak JSON dan output test runner terminal.

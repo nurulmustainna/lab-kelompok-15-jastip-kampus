@@ -4,9 +4,10 @@ const path = require("node:path");
 
 const app = express();
 app.use(express.json());
+const PORT = Number(process.env.PORT || 3001);
 
 // Menentukan lokasi database catalog.db agar otomatis dibuat di folder services/catalog/
-const dbPath = path.join(__dirname, "catalog.db");
+const dbPath = process.env.CATALOG_DB_PATH || path.join(__dirname, "catalog.db");
 const db = new DatabaseSync(dbPath);
 
 // Membuat tabel items jika belum ada
@@ -50,4 +51,4 @@ app.post("/items/:id/ambil", (req, res) => {
 
 app.get("/health", (_req, res) => res.json({ status: "ok", service: "catalog" }));
 
-app.listen(3001, () => console.log("catalog berjalan di :3001"));
+app.listen(PORT, () => console.log(`catalog berjalan di :${PORT}`));

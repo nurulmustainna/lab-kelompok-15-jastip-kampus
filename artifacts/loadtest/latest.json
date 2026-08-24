@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-08-24T06:48:51.259Z",
+  "scenario": {
+    "totalRequests": 200,
+    "concurrency": 40,
+    "initialStock": 50
+  },
+  "outcomes": {
+    "201": 50,
+    "409": 150
+  },
+  "assertions": {
+    "successEqualsStockConsumed": true,
+    "stockNeverNegative": true,
+    "onlyExpectedStatuses": true
+  },
+  "metrics": {
+    "totalDurationMs": 617.32,
+    "throughputRps": 323.98,
+    "latencyMs": {
+      "min": 32.49,
+      "p50": 74.83,
+      "p95": 348.38,
+      "p99": 411.67,
+      "max": 422.26
+    }
+  },
+  "stock": {
+    "before": 50,
+    "after": 0,
+    "consumed": 50
+  },
+  "notes": {
+    "expectedSuccesses": 50,
+    "expectedConflicts": 150,
+    "successCount": 50,
+    "conflictCount": 150
+  }
+}

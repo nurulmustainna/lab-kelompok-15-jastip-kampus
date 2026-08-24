@@ -5,10 +5,39 @@ const app = express();
 app.use(express.json());
 
 const CATALOG_URL = process.env.CATALOG_URL || "http://localhost:3001";
+const PORT = Number(process.env.PORT || 3002);
+const ENABLE_EVENTS = process.env.ENABLE_EVENTS !== "0";
 
 // 2. Inisialisasi Publisher Redis
-const pub = createClient({ url: process.env.REDIS_URL || "redis://localhost:6379" });
-pub.connect().catch(console.error);
+const pub = ENABLE_EVENTS
+  ? createClient({ url: process.env.REDIS_URL || "redis://localhost:6379" })
+  : null;
+
+if (pub) {
+  pub.on("error", (error) => {
+    const detail = error.message || error.code || "unknown redis error";
+    console.error("redis publisher error:", detail);
+  });
+
+  pub.connect().catch((error) => {
+    const detail = error.message || error.code || "redis unavailable";
+    console.error("redis publisher unavailable:", detail);
+  });
+}
+
+async function publishOrderCreated(order) {
+  if (!pub || !pub.isReady) {
+    return false;
+  }
+
+  try {
+    await pub.publish("order.created", JSON.stringify(order));
+    return true;
+  } catch (error) {
+    console.error("gagal publish order.created:", error.message);
+    return false;
+  }
+}
 
 app.post("/orders", async (req, res) => {
   const { itemId, qty } = req.body;
@@ -36,12 +65,12 @@ app.post("/orders", async (req, res) => {
 
   const order = { id: Date.now(), item: item.nama, qty, total: item.harga * qty };
 
-  // 3. Terbitkan event order.created ke Redis secara asinkron
-  await pub.publish("order.created", JSON.stringify(order));
+  // Event tetap dicoba, tetapi kegagalannya tidak boleh membatalkan order yang sudah sah.
+  await publishOrderCreated(order);
 
   res.status(201).json(order);
 });
 
 app.get("/health", (_req, res) => res.json({ status: "ok", service: "order" }));
 
-app.listen(3002, () => console.log("order berjalan di :3002"));
+app.listen(PORT, () => console.log(`order berjalan di :${PORT}`));

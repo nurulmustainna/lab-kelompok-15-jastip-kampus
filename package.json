@@ -8,7 +8,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:smoke": "node --test tests/smoke.test.js",
+    "test:rebutan": "node --test tests/rebutan.test.js",
+    "test:services": "node --test tests/*.test.js",
+    "qa:smoke": "node scripts/run-qa-smoke.mjs",
+    "loadtest": "node scripts/run-loadtest.mjs",
+    "qa:report": "npm run qa:smoke && npm run loadtest"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

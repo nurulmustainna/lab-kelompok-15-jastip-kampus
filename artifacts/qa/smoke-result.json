@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-08-24T06:49:05.281Z",
+  "checks": [
+    {
+      "name": "GET /health",
+      "status": "passed"
+    },
+    {
+      "name": "POST /orders invalid qty",
+      "status": "passed"
+    },
+    {
+      "name": "POST /orders decrements stock",
+      "status": "passed"
+    }
+  ],
+  "stockBefore": 50,
+  "stockAfter": 49
+}
