@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingBag, Sparkles, LogOut, CheckCircle2, UserCheck, Wallet, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Sparkles, LogOut, CheckCircle2, UserCheck, Wallet, ChevronDown, Lock } from 'lucide-react';
 import { StudentAccount } from '../types';
 
 export type UserRole = 'mahasiswa' | 'jastiper' | 'admin';
@@ -49,7 +49,7 @@ export const MainPortalHeader: React.FC<MainPortalHeaderProps> = ({
         {/* Right: Demo Role Switcher & Student Account Button & Keluar Button */}
         <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-2.5 w-full md:w-auto">
           
-          {/* Demo Role Switcher */}
+          {/* Role Status Switcher / RBAC Indicator */}
           <div className="flex items-center bg-emerald-50/90 p-1 rounded-xl border border-emerald-200 text-xs">
             <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider px-2 hidden sm:flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-emerald-600" />
@@ -59,7 +59,7 @@ export const MainPortalHeader: React.FC<MainPortalHeaderProps> = ({
             <button
               type="button"
               onClick={() => onRoleChange('mahasiswa')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 currentRole === 'mahasiswa'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-emerald-800 hover:text-emerald-950 hover:bg-emerald-100'
@@ -71,25 +71,33 @@ export const MainPortalHeader: React.FC<MainPortalHeaderProps> = ({
             <button
               type="button"
               onClick={() => onRoleChange('jastiper')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
                 currentRole === 'jastiper'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-emerald-800 hover:text-emerald-950 hover:bg-emerald-100'
               }`}
+              title={currentStudent.role !== 'jastiper' ? 'Khusus Mitra Jastiper (Login diperlukan)' : 'Buka Dashboard Jastiper'}
             >
-              Jastiper
+              <span>Jastiper</span>
+              {currentStudent.role !== 'jastiper' && currentRole !== 'jastiper' && (
+                <Lock className="w-3 h-3 text-emerald-700/70" />
+              )}
             </button>
 
             <button
               type="button"
               onClick={() => onRoleChange('admin')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
                 currentRole === 'admin'
                   ? 'bg-emerald-600 text-white shadow-sm'
                   : 'text-emerald-800 hover:text-emerald-950 hover:bg-emerald-100'
               }`}
+              title="Khusus Super Admin SRE Unismuh (Login admin diperlukan)"
             >
-              Admin
+              <span>Admin</span>
+              {currentRole !== 'admin' && (
+                <Lock className="w-3 h-3 text-emerald-700/70" />
+              )}
             </button>
           </div>
 

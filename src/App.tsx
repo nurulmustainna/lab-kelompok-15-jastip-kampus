@@ -23,10 +23,10 @@ import { CatalogItem, JastipOrder, JastipSession, StudentAccount } from './types
 export default function App() {
   // Page mode: 'LANDING' (Halaman Depan Modern Dark Mode) or 'PORTAL' (Dashboard Sistem Akademik Unismuh)
   const [viewMode, setViewMode] = useState<'LANDING' | 'PORTAL'>('LANDING');
-  const [activeTab, setActiveTab] = useState<PortalTab>('catalog');
+  const [activeTab, setActiveTab] = useState<PortalTab>('sessions');
   const [userRole, setUserRole] = useState<UserRole>('mahasiswa');
   const [sessions, setSessions] = useState<JastipSession[]>(MOCK_SESSIONS);
-  const [catalogItems] = useState<CatalogItem[]>(MOCK_CATALOG_ITEMS);
+  const [catalogItems, setCatalogItems] = useState<CatalogItem[]>(MOCK_CATALOG_ITEMS);
   
   // Student Account state (Active Logged-In Student)
   const [studentAccounts, setStudentAccounts] = useState<StudentAccount[]>(MOCK_STUDENT_ACCOUNTS);
@@ -144,6 +144,18 @@ export default function App() {
           catalogItems={catalogItems}
           sessions={sessions}
           currentOrder={currentOrder}
+          onUpdateCatalogItem={(updatedItem) => {
+            setCatalogItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+            showToast(`Katalog "${updatedItem.name}" berhasil diperbarui.`);
+          }}
+          onAddCatalogItem={(newItem) => {
+            setCatalogItems(prev => [newItem, ...prev]);
+            showToast(`Menu "${newItem.name}" berhasil ditambahkan.`);
+          }}
+          onDeleteCatalogItem={(itemId) => {
+            setCatalogItems(prev => prev.filter(item => item.id !== itemId));
+            showToast('Item berhasil dihapus dari katalog.');
+          }}
         />
       ) : (
         /* 
@@ -159,14 +171,31 @@ export default function App() {
           <MainPortalHeader 
             currentRole={userRole}
             onRoleChange={(role) => {
-              setUserRole(role);
-              if (role === 'admin') {
-                showToast('Masuk ke Dashboard Admin SRE Cluster Unismuh.');
-              } else if (role === 'jastiper') {
+              if (role === 'jastiper') {
+                if (currentStudent.role !== 'jastiper') {
+                  showToast('Akses Dibatasi: Akun mahasiswa ini belum terdaftar sebagai Mitra Jastiper. Silakan login atau daftar akun mitra.');
+                  handleOpenAuth('LOGIN_MITRA');
+                  return;
+                }
+                setUserRole('jastiper');
                 setActiveTab('sessions');
-              } else {
-                setActiveTab('catalog');
+                showToast(`Mode Jastiper Aktif: Selamat datang ${currentStudent.name}, Anda dapat menerima pesanan.`);
+                return;
               }
+
+              if (role === 'admin') {
+                if (currentStudent.role !== 'admin') {
+                  showToast('Akses Dibatasi: Halaman Admin memerlukan login akun Super Admin SRE Unismuh.');
+                  handleOpenAuth('LOGIN_ADMIN');
+                  return;
+                }
+                setUserRole('admin');
+                showToast('Masuk ke Dashboard Admin SRE Cluster Unismuh.');
+                return;
+              }
+
+              setUserRole('mahasiswa');
+              setActiveTab('catalog');
             }}
             activeOrderCount={1}
             currentStudent={currentStudent}
@@ -182,6 +211,7 @@ export default function App() {
             activeTab={activeTab}
             onSelectTab={setActiveTab}
             orderCount={1}
+            currentRole={userRole}
           />
 
           {/* Main Container */}

@@ -3,6 +3,7 @@ import {
   ShoppingBag, FileText, Bike, ShieldCheck, MapPin, 
   BookOpen
 } from 'lucide-react';
+import { UserRole } from './MainPortalHeader';
 
 export type PortalTab = 
   | 'catalog' 
@@ -16,21 +17,32 @@ interface PortalNavbarProps {
   activeTab: PortalTab;
   onSelectTab: (tab: PortalTab) => void;
   orderCount?: number;
+  currentRole?: UserRole;
 }
 
 export const PortalNavbar: React.FC<PortalNavbarProps> = ({
   activeTab,
   onSelectTab,
-  orderCount = 1
+  orderCount = 1,
+  currentRole = 'mahasiswa'
 }) => {
-  const tabs = [
+  // Define tabs specifically tailored to the user's active role
+  const mahasiswaTabs = [
+    { id: 'sessions' as const, label: 'Sesi Titipan (Pilih Runner)', icon: Bike, badge: '3 Sesi' },
     { id: 'catalog' as const, label: 'Katalog Jastip (Buka Order)', icon: ShoppingBag, badge: '50 Item' },
     { id: 'my-orders' as const, label: 'Pesanan Saya (Tawar & Bayar)', icon: FileText, badge: orderCount > 0 ? `${orderCount} Aktif` : undefined },
-    { id: 'sessions' as const, label: 'Sesi Titipan (Rute & Bagasi)', icon: Bike, badge: '3 Sesi' },
-    { id: 'escrow' as const, label: 'Rekening Bersama (Escrow)', icon: ShieldCheck, badge: 'Vault' },
     { id: 'tracking' as const, label: 'Lacak Real-Time & Titik Temu', icon: MapPin, badge: 'Live' },
-    { id: 'rules' as const, label: 'Aturan & Closing Time', icon: BookOpen },
   ];
+
+  const jastiperTabs = [
+    { id: 'sessions' as const, label: 'Workspace Jastiper', icon: Bike, badge: 'Aktif' },
+    { id: 'my-orders' as const, label: 'Daftar Titipan & Riwayat', icon: FileText, badge: orderCount > 0 ? `${orderCount} Order` : undefined },
+    { id: 'tracking' as const, label: 'Lacak Antar & Titik Temu', icon: MapPin, badge: 'Live' },
+    { id: 'rules' as const, label: 'Aturan & SOP Closing', icon: BookOpen },
+    { id: 'escrow' as const, label: 'Rekening Bersama (Escrow)', icon: ShieldCheck, badge: 'Vault' },
+  ];
+
+  const tabs = currentRole === 'jastiper' ? jastiperTabs : mahasiswaTabs;
 
   return (
     <nav className="bg-emerald-800 text-white border-b border-emerald-900 shadow-md">
@@ -68,3 +80,4 @@ export const PortalNavbar: React.FC<PortalNavbarProps> = ({
     </nav>
   );
 };
+

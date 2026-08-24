@@ -14,8 +14,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenAuthModal,
-  onEnterDashboard,
-  onSelectCatalogItem
+  onEnterDashboard
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
@@ -23,54 +22,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const toggleFaq = (idx: number) => {
     setActiveFaq(activeFaq === idx ? null : idx);
   };
-
-  // 4 Popular Catalog Items specified in prompt
-  const popularCatalog = [
-    {
-      id: 'snack-unismuh',
-      title: 'Snacks Unismuh',
-      category: 'Makanan & Camilan',
-      price: 25000,
-      image: 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=500&auto=format&fit=crop&q=80',
-      description: 'Aneka cemilan renyah, kue basah & snack kantin kampus khas mahasiswa Unismuh.',
-      rating: 4.9,
-      sold: '850+ terjual',
-      tag: 'Favorit Break'
-    },
-    {
-      id: 'kosmetik-kampus',
-      title: 'Kosmetik Kampus',
-      category: 'Skincare & Beauty',
-      price: 75000,
-      image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80',
-      description: 'Sunscreen, lip balm, dan paket skincare harian anti kusam untuk aktivitas kuliah outdoor.',
-      rating: 4.8,
-      sold: '430+ terjual',
-      tag: 'Best Seller'
-    },
-    {
-      id: 'atk-mahasiswa',
-      title: 'Alat Tulis Mahasiswa',
-      category: 'ATK & Kuliah',
-      price: 15000,
-      image: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=500&auto=format&fit=crop&q=80',
-      description: 'Paket pulpen gel, buku catatan spiral, binder, kalkulator & perlengkapan praktikum.',
-      rating: 4.9,
-      sold: '1.2k+ terjual',
-      tag: 'Wajib Kuliah'
-    },
-    {
-      id: 'merchandise-kampus',
-      title: 'Merchandise Kampus',
-      category: 'Apparel & Accessories',
-      price: 60000,
-      image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=500&auto=format&fit=crop&q=80',
-      description: 'Tote bag canvas eksklusif Unismuh, gantungan kunci akrilik, dan pin logo almamater.',
-      rating: 5.0,
-      sold: '620+ terjual',
-      tag: 'Official Unismuh'
-    }
-  ];
 
   const layananFeatures = [
     {
@@ -176,19 +127,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
-            {/* Center Links: Menu navigasi "Layanan", "Catalog", "Testimoni", "FAQ" */}
+            {/* Center Links: Menu navigasi "Layanan", "Testimoni", "FAQ" */}
             <nav className="hidden md:flex items-center space-x-1 lg:space-x-6 text-xs sm:text-sm font-semibold text-slate-300">
               <a 
                 href="#layanan" 
                 className="px-3 py-2 rounded-xl hover:text-[#10B981] hover:bg-white/5 transition-colors"
               >
                 Layanan
-              </a>
-              <a 
-                href="#catalog" 
-                className="px-3 py-2 rounded-xl hover:text-[#10B981] hover:bg-white/5 transition-colors"
-              >
-                Catalog
               </a>
               <a 
                 href="#testimoni" 
@@ -364,114 +309,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* 
         ========================================================================
-        4. CATALOG SECTION ("Catalog Jastip Populer")
-        ========================================================================
-      */}
-      <section id="catalog" className="relative z-10 py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/80">
-        
-        {/* Heading Section */}
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
-          <div className="inline-flex items-center gap-2 bg-[#004D40]/60 border border-[#10B981]/30 px-3 py-1 rounded-full text-xs font-semibold text-[#A7F3D0]">
-            <ShoppingBag className="w-3.5 h-3.5 text-[#10B981]" />
-            <span>MENU REKOMENDASI TERLARIS</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-            Catalog Jastip Populer
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
-            Jelajahi catalog item jastip favorit dan unik dari Unismuh
-          </p>
-        </div>
-
-        {/* 4 Cards Grid (Kartu Putih Clean dengan Gambar Produk & Teks Hitam) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {popularCatalog.map((item) => (
-            <div 
-              key={item.id}
-              onClick={() => {
-                if (onSelectCatalogItem) {
-                  onSelectCatalogItem(item.title);
-                } else {
-                  onEnterDashboard();
-                }
-              }}
-              className="bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer border border-slate-100"
-            >
-              <div>
-                {/* Product Image Container */}
-                <div className="relative h-48 w-full overflow-hidden bg-slate-100">
-                  <img 
-                    src={item.image} 
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    referrerPolicy="no-referrer"
-                  />
-                  <span className="absolute top-3 left-3 bg-[#004D40] text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-md">
-                    {item.tag}
-                  </span>
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-xs text-slate-900 text-xs font-black px-2 py-0.5 rounded-lg flex items-center gap-1 shadow-sm">
-                    <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                    <span>{item.rating}</span>
-                  </div>
-                </div>
-
-                {/* Content Box (Teks Hitam Clean di atas Latar Putih) */}
-                <div className="p-5 space-y-2">
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
-                    {item.category}
-                  </div>
-                  <h3 className="text-lg font-black text-slate-900 leading-tight group-hover:text-[#004D40] transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-
-              {/* Price & Action Row */}
-              <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-slate-400 font-bold block uppercase">Harga Item</span>
-                  <span className="text-lg font-black text-slate-900">
-                    Rp {item.price.toLocaleString('id-ID')}
-                  </span>
-                </div>
-                
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onOpenAuthModal('CHOICE');
-                  }}
-                  className="px-3.5 py-2 bg-[#004D40] hover:bg-[#00382e] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95"
-                >
-                  <span>Titip</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#A7F3D0]" />
-                </button>
-              </div>
-
-            </div>
-          ))}
-        </div>
-
-        {/* View full catalog CTA */}
-        <div className="mt-10 text-center">
-          <button
-            type="button"
-            onClick={onEnterDashboard}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#004D40] hover:bg-[#00382e] text-[#A7F3D0] border border-[#10B981]/40 rounded-2xl font-bold text-sm transition-all hover:scale-105"
-          >
-            <span>Lihat Semua 50+ Item Katalog Warung Sekitar Kampus</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-
-      </section>
-
-      {/* 
-        ========================================================================
-        5. LAYANAN SECTION
+        4. LAYANAN SECTION
         ========================================================================
       */}
       <section id="layanan" className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-800/80">

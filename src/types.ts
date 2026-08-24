@@ -33,14 +33,18 @@ export interface MicroserviceInfo {
 export interface CatalogItem {
   id: string;
   name: string;
-  category: 'Makanan' | 'Minuman' | 'ATK & Cetak' | 'Snack & Kebutuhan Kos' | 'Komponen & Alat Lab';
+  category: 'Makanan' | 'Minuman' | 'Kue & Cemilan' | 'ATK & Buku' | 'ATK & Cetak' | 'Merchandise Unismuh' | 'Snack & Kebutuhan Kos' | 'Komponen & Alat Lab' | string;
   price: number;
   jastipFee: number;
   storeName: string;
-  storeLocation: string;
+  storeLocation?: string;
+  location?: string;
   image: string;
-  estimatedWeightKg: number;
+  estimatedWeightKg?: number;
   available: boolean;
+  rating?: number;
+  soldCount?: number;
+  description?: string;
 }
 
 export interface JastipSession {
