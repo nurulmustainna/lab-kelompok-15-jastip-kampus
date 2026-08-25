@@ -53,16 +53,13 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
   const [verificationPin, setVerificationPin] = useState('');
 
   // Convert allStudentOrders into array
-  // Handle both formats: Record<string, JastipOrder> and Record<string, JastipOrder[]>
   const studentOrdersList = useMemo(() => {
-    return Object.entries(allStudentOrders || {}).flatMap(([nim, orders]) => {
-      // Handle case where orders is a single JastipOrder (not array)
-      const orderArray = Array.isArray(orders) ? orders : (orders ? [orders] : []);
-      return orderArray.map((order) => ({
+    return Object.entries(allStudentOrders || {}).flatMap(([nim, orders]) =>
+      (orders || []).map((order) => ({
         studentNim: nim,
         order
-      }));
-    });
+      }))
+    );
   }, [allStudentOrders]);
 
   // === METRICS CALCULATIONS ===
@@ -74,11 +71,8 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
   }, [studentOrdersList]);
 
   const pendingClaimsCount = useMemo(() => {
-    return studentOrdersList.filter(({ order }) => 
-      order.status === 'ESCROW_DITAMPUNG' && 
-      (!order.assignedJastiperId || order.assignedJastiperId === currentStudent?.id)
-    ).length;
-  }, [studentOrdersList, currentStudent?.id]);
+    return studentOrdersList.filter(({ order }) => order.status === 'ESCROW_DITAMPUNG').length;
+  }, [studentOrdersList]);
 
   const completedCount = useMemo(() => {
     return studentOrdersList.filter(({ order }) => order.status === 'SELESAI_DITERIMA').length;
@@ -93,24 +87,12 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
   // Filtered orders
   const filteredOrders = useMemo(() => {
     return studentOrdersList.filter(({ order }) => {
-      if (orderFilterTab === 'PENDING_CLAIM') {
-        // Only show unassigned orders or orders assigned to current jastiper
-        return order.status === 'ESCROW_DITAMPUNG' && 
-               (!order.assignedJastiperId || order.assignedJastiperId === currentStudent?.id);
-      }
-      if (orderFilterTab === 'IN_PROGRESS') {
-        // Only show orders assigned to current jastiper
-        return (order.status === 'DIBELI_JASTIPER' || order.status === 'MENUJU_KAMPUS' || order.status === 'SAMPAI_DI_TITIK_TEMU') &&
-               order.assignedJastiperId === currentStudent?.id;
-      }
-      if (orderFilterTab === 'COMPLETED') {
-        // Only show completed orders assigned to current jastiper
-        return order.status === 'SELESAI_DITERIMA' && 
-               order.assignedJastiperId === currentStudent?.id;
-      }
+      if (orderFilterTab === 'PENDING_CLAIM') return order.status === 'ESCROW_DITAMPUNG';
+      if (orderFilterTab === 'IN_PROGRESS') return order.status === 'DIBELI_JASTIPER' || order.status === 'MENUJU_KAMPUS' || order.status === 'SAMPAI_DI_TITIK_TEMU';
+      if (orderFilterTab === 'COMPLETED') return order.status === 'SELESAI_DITERIMA';
       return true;
     });
-  }, [studentOrdersList, orderFilterTab, currentStudent?.id]);
+  }, [studentOrdersList, orderFilterTab]);
 
   // === VALIDATION FUNCTIONS ===
 
@@ -130,33 +112,21 @@ export const JastiperWorkspace: React.FC<JastiperWorkspaceProps> = ({
   // === EVENT HANDLERS ===
 
   const handleClaimEntireOrder = (studentNim: string, order: JastipOrder) => {
-    // PREVENT DOUBLE CLAIM: Check if order is already assigned to someone else
-    if (order.assignedJastiperId && order.assignedJastiperId !== currentStudent?.id) {
-      onShowToast?.('❌ Pesanan ini sudah diklaim Jastiper lain!');
-      return;
-    }
-
     if (order.status !== 'ESCROW_DITAMPUNG') {
       onShowToast?.('❌ Pesanan ini sudah diklaim atau tidak valid untuk diklaim!');
       return;
     }
 
-    // Use current logged-in jastiper, not hardcoded name
-    const jastiperName = currentStudent?.name || 'Jastiper';
-    const jastiperId = currentStudent?.id || 'UNKNOWN';
-
     const updatedOrder: JastipOrder = {
       ...order,
       status: 'DIBELI_JASTIPER',
       escrowStatus: 'HELD_IN_ESCROW',
-      assignedJastiperId: jastiperId,
-      assignedJastipername: jastiperName,
       trackingHistory: order.trackingHistory.map((step, idx) => {
         if (idx === 2) {
           return {
             ...step,
             done: true,
-            note: `Pesanan resmi diklaim oleh Jastiper ${jastiperName} (Siapa Cepat Dia Dapat).`
+            note: 'Pesanan resmi diklaim oleh Jastiper Andi M. Fikri (Siapa Cepat Dia Dapat).'
           };
         }
         return step;

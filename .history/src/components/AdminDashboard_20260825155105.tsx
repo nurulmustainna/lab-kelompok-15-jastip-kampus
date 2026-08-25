@@ -1041,10 +1041,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#1B4D3E]/60 text-slate-200">
-                      {Object.entries(studentOrders || {}).length > 0 ? (
-                        Object.entries(studentOrders || {}).flatMap(([nim, orders]) => 
-                          (orders || []).map((order) => ({ nim, order }))
-                        ).map(({ nim, order }) => {
+                      {Object.entries(studentOrders).length > 0 ? (
+                        Object.entries(studentOrders).map(([nim, order]) => {
                           const statusColors: Record<string, { bg: string; text: string; border: string }> = {
                             'MENUNGGU_PEMBAYARAN': { bg: 'bg-yellow-950', text: 'text-yellow-300', border: 'border-yellow-800' },
                             'ESCROW_DITAMPUNG': { bg: 'bg-blue-950', text: 'text-blue-300', border: 'border-blue-800' },

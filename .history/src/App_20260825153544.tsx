@@ -50,32 +50,22 @@ export default function App() {
     setIsAuthModalOpen(true);
   };
 
-  // Distinct Student Orders map - NOW STORES ARRAYS OF ORDERS PER NIM
+  // Distinct Student Orders map
   // Initialize from localStorage if available, otherwise use MOCK_STUDENT_ORDERS
-  const [studentOrders, setStudentOrders] = useState<Record<string, JastipOrder[]>>(() => {
+  const [studentOrders, setStudentOrders] = useState<Record<string, JastipOrder>>(() => {
     try {
       const stored = localStorage.getItem('jastip_orders');
       if (stored) {
-        return JSON.parse(stored) as Record<string, JastipOrder[]>;
+        return JSON.parse(stored) as Record<string, JastipOrder>;
       }
     } catch (e) {
       console.error('Failed to load orders from localStorage:', e);
     }
-    // Convert MOCK_STUDENT_ORDERS from single order to array format for backward compatibility
-    const convertedMock: Record<string, JastipOrder[]> = {};
-    for (const [nim, order] of Object.entries(MOCK_STUDENT_ORDERS)) {
-      convertedMock[nim] = [order];
-    }
-    return convertedMock;
+    return MOCK_STUDENT_ORDERS;
   });
-  const [currentOrder, setCurrentOrder] = useState<JastipOrder>(() => {
-    const firstNim = MOCK_STUDENT_ACCOUNTS[0].nim;
-    if (MOCK_STUDENT_ORDERS[firstNim]) {
-      return MOCK_STUDENT_ORDERS[firstNim];
-    }
-    return INITIAL_DEMO_ORDER;
-  });
-  const [currentOrderTab, setCurrentOrderTab] = useState<'active' | 'history'>('active');
+  const [currentOrder, setCurrentOrder] = useState<JastipOrder>(
+    MOCK_STUDENT_ORDERS[MOCK_STUDENT_ACCOUNTS[0].nim] || INITIAL_DEMO_ORDER
+  );
 
   // Persist studentOrders to localStorage whenever they change
   useEffect(() => {
@@ -119,28 +109,19 @@ export default function App() {
   }, [deletedOrderIds]);
   
   // Update order handler that synchronizes to studentOrders state
-  // NOW FINDS AND UPDATES SPECIFIC ORDER IN ARRAY
   const handleUpdateCurrentOrder = (updated: JastipOrder) => {
     setCurrentOrder(updated);
-    setStudentOrders(prev => {
-      const userOrders = prev[currentStudent.nim] || [];
-      const updatedOrders = userOrders.map(o => o.id === updated.id ? updated : o);
-      return {
-        ...prev,
-        [currentStudent.nim]: updatedOrders
-      };
-    });
+    setStudentOrders(prev => ({
+      ...prev,
+      [currentStudent.nim]: updated
+    }));
   };
 
   const handleUpdateStudentOrderByNim = (nim: string, updated: JastipOrder) => {
-    setStudentOrders(prev => {
-      const userOrders = prev[nim] || [];
-      const updatedOrders = userOrders.map(o => o.id === updated.id ? updated : o);
-      return {
-        ...prev,
-        [nim]: updatedOrders
-      };
-    });
+    setStudentOrders(prev => ({
+      ...prev,
+      [nim]: updated
+    }));
     if (currentStudent.nim === nim) {
       setCurrentOrder(updated);
     }
@@ -189,14 +170,10 @@ export default function App() {
     }
 
     setCurrentOrder(newOrder);
-    // APPEND NEW ORDER TO ARRAY INSTEAD OF REPLACING
-    setStudentOrders(prev => {
-      const userOrders = prev[currentStudent.nim] || [];
-      return {
-        ...prev,
-        [currentStudent.nim]: [...userOrders, newOrder]
-      };
-    });
+    setStudentOrders(prev => ({
+      ...prev,
+      [currentStudent.nim]: newOrder
+    }));
     showToast(`Order #${newOrder.orderCode} berhasil dibuat via ${newOrder.paymentMethodLabel || 'QRIS Unismuh'} & dana Rp ${newOrder.grandTotal.toLocaleString('id-ID')} terkunci di Rekber Escrow!`);
     setActiveTab('my-orders');
   };
@@ -205,14 +182,13 @@ export default function App() {
     setCurrentStudent(student);
     setUserRole(student.role);
 
-    // Load first active order for this student, or latest order, or placeholder
-    const userOrders = studentOrders[student.nim] || [];
-    if (userOrders.length > 0) {
-      // Try to find an active order, otherwise use the latest (last in array)
-      const activeOrder = userOrders.find(o => o.status !== 'SELESAI_DITERIMA');
-      setCurrentOrder(activeOrder || userOrders[userOrders.length - 1]);
+    // Load distinct order for this student ONLY IF they have a real order
+    // Do NOT create fake orders for new users
+    if (studentOrders[student.nim]) {
+      setCurrentOrder(studentOrders[student.nim]);
     } else {
-      // No existing orders - use placeholder only for UI state, not added to studentOrders
+      // New user with no order: use INITIAL_DEMO_ORDER as placeholder (just for component rendering)
+      // This is NOT stored to studentOrders, just for UI display
       setCurrentOrder(INITIAL_DEMO_ORDER);
     }
 
@@ -245,10 +221,6 @@ export default function App() {
   const isOrderDeletedByBuyer = () => {
     return deletedOrderIds[currentStudent.nim]?.has(currentOrder.id) ?? false;
   };
-
-  // Calculate active orders count for current user (same logic as MyOrdersSection)
-  const userOrdersList = studentOrders[currentStudent.nim] || [];
-  const activeOrdersCount = userOrdersList.filter(o => o.status !== 'SELESAI_DITERIMA').length;
 
   return (
     <div className="min-h-screen text-slate-900 font-sans selection:bg-emerald-600 selection:text-white">
@@ -372,7 +344,7 @@ export default function App() {
           <PortalNavbar 
             activeTab={activeTab}
             onSelectTab={setActiveTab}
-            orderCount={activeOrdersCount}
+            orderCount={1}
             currentRole={userRole}
           />
 
@@ -399,16 +371,15 @@ export default function App() {
                 />
               )}
 
-              {activeTab === 'my-orders' && userRole === 'mahasiswa' && (
+              {activeTab === 'my-orders' && (
                 <MyOrdersSection 
-                    userOrders={studentOrders[currentStudent.nim] || []}
+                  currentOrder={currentOrder}
                   onUpdateOrder={handleUpdateCurrentOrder}
                   onNavigateTab={setActiveTab}
                   currentRole={userRole}
                   onShowToast={showToast}
+                  isOrderDeleted={isOrderDeletedByBuyer()}
                   onDeleteOrder={handleDeleteOrder}
-                  activeOrderTab={currentOrderTab}
-                  onChangeOrderTab={setCurrentOrderTab}
                 />
               )}
 
@@ -434,8 +405,6 @@ export default function App() {
                       setActiveTab('catalog');
                     }}
                     onNavigateTab={setActiveTab}
-                    currentRole={userRole}
-                    currentStudent={currentStudent}
                   />
                 )
               )}

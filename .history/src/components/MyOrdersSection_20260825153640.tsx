@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
 import { 
   FileText, ShieldCheck, QrCode, ArrowRight, CheckCircle2, 
-  Clock, Sparkles, MapPin, Store, AlertCircle, RefreshCw, Layers, Trash2,
-  History
+  Clock, Sparkles, MapPin, Store, AlertCircle, RefreshCw, Layers, Trash2
 } from 'lucide-react';
 import { JastipOrder } from '../types';
 import { PortalTab } from './PortalNavbar';
 
 interface MyOrdersSectionProps {
-  userOrders: JastipOrder[];  // Changed: accept array of orders
+  currentOrder: JastipOrder;
   onUpdateOrder: (order: JastipOrder) => void;
   onNavigateTab: (tab: PortalTab) => void;
   currentRole?: string;
   onShowToast?: (msg: string) => void;
+  isOrderDeleted?: boolean;
   onDeleteOrder?: (orderId: string) => void;
-  activeOrderTab?: 'active' | 'history';  // New: track which tab is active
-  onChangeOrderTab?: (tab: 'active' | 'history') => void;  // New: callback for tab change
+  hasRealOrder?: boolean;
 }
 
-// Internal component for displaying a single order
-const OrderCard: React.FC<{
-  order: JastipOrder;
-  onUpdateOrder: (order: JastipOrder) => void;
-  onNavigateTab: (tab: PortalTab) => void;
-  onShowToast?: (msg: string) => void;
-  onDeleteOrder?: (orderId: string) => void;
-  isCompleted: boolean;
-}> = ({ order, onUpdateOrder, onNavigateTab, onShowToast, onDeleteOrder, isCompleted }) => {
+export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
+  currentOrder,
+  onUpdateOrder,
+  onNavigateTab,
+  currentRole,
+  onShowToast,
+  isOrderDeleted = false,
+  onDeleteOrder,
+  hasRealOrder = false
+}) => {
   const [isSimulatingPayment, setIsSimulatingPayment] = useState(false);
   const [showQrisModal, setShowQrisModal] = useState(false);
 
@@ -37,11 +37,11 @@ const OrderCard: React.FC<{
       setShowQrisModal(false);
       
       const updated: JastipOrder = {
-        ...order,
+        ...currentOrder,
         status: 'ESCROW_DITAMPUNG',
         escrowStatus: 'HELD_IN_ESCROW',
-        trackingHistory: order.trackingHistory.map((th, idx) => {
-          if (idx === 1) return { ...th, done: true, note: 'Pembayaran QRIS Rp ' + order.grandTotal.toLocaleString('id-ID') + ' terverifikasi dan ditahan di Rekber Escrow.' };
+        trackingHistory: currentOrder.trackingHistory.map((th, idx) => {
+          if (idx === 1) return { ...th, done: true, note: 'Pembayaran QRIS Rp ' + currentOrder.grandTotal.toLocaleString('id-ID') + ' terverifikasi dan ditahan di Rekber Escrow.' };
           return th;
         })
       };
@@ -50,25 +50,25 @@ const OrderCard: React.FC<{
   };
 
   const handleAdvanceStep = () => {
-    let nextStatus = order.status;
-    let nextEscrow = order.escrowStatus;
+    let nextStatus = currentOrder.status;
+    let nextEscrow = currentOrder.escrowStatus;
 
-    if (order.status === 'ESCROW_DITAMPUNG') {
+    if (currentOrder.status === 'ESCROW_DITAMPUNG') {
       nextStatus = 'DIBELI_JASTIPER';
-    } else if (order.status === 'DIBELI_JASTIPER') {
+    } else if (currentOrder.status === 'DIBELI_JASTIPER') {
       nextStatus = 'MENUJU_KAMPUS';
-    } else if (order.status === 'MENUJU_KAMPUS') {
+    } else if (currentOrder.status === 'MENUJU_KAMPUS') {
       nextStatus = 'SAMPAI_DI_TITIK_TEMU';
-    } else if (order.status === 'SAMPAI_DI_TITIK_TEMU') {
+    } else if (currentOrder.status === 'SAMPAI_DI_TITIK_TEMU') {
       nextStatus = 'SELESAI_DITERIMA';
       nextEscrow = 'RELEASED_TO_JASTIPER';
     }
 
     const updated: JastipOrder = {
-      ...order,
+      ...currentOrder,
       status: nextStatus,
       escrowStatus: nextEscrow,
-      trackingHistory: order.trackingHistory.map((step, idx) => {
+      trackingHistory: currentOrder.trackingHistory.map((step, idx) => {
         if (nextStatus === 'DIBELI_JASTIPER' && idx <= 3) return { ...step, done: true };
         if (nextStatus === 'MENUJU_KAMPUS' && idx <= 4) return { ...step, done: true };
         if (nextStatus === 'SAMPAI_DI_TITIK_TEMU' && idx <= 4) return { ...step, done: true };
@@ -82,35 +82,74 @@ const OrderCard: React.FC<{
 
   return (
     <div className="space-y-6 animate-fade-in">
+      
+      {/* Show empty state if user has no real order */}
+      {!hasRealOrder && !isOrderDeleted && (
+        <div className="bg-white p-8 sm:p-12 rounded-3xl border border-emerald-100 shadow-sm text-center">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 mx-auto flex items-center justify-center text-emerald-700 mb-4">
+            <FileText className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-emerald-950 mb-2">Belum Ada Pesanan</h3>
+          <p className="text-sm text-emerald-700 mb-6">
+            Anda belum membuat pesanan. Mulai berbelanja sekarang dengan membuat pesanan baru di tab Katalog.
+          </p>
+          <button
+            onClick={() => onNavigateTab('catalog')}
+            className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm"
+          >
+            Mulai Berbelanja
+          </button>
+        </div>
+      )}
+      
+      {/* Show message if order is deleted */}
+      {isOrderDeleted && (
+        <div className="bg-white p-5 sm:p-6 rounded-3xl border border-amber-200 shadow-sm">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-amber-900">Pesanan Telah Dihapus</h3>
+              <p className="text-xs text-amber-700 mt-1">
+                Pesanan #{currentOrder.orderCode} telah dihapus dari daftar Pesanan Saya. Anda bisa membuat pesanan baru.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Only show order details if not deleted AND has real order */}
+      {!isOrderDeleted && hasRealOrder && (
+      <>
+      
       {/* Header Banner */}
       <div className="bg-white p-5 sm:p-6 rounded-3xl border border-emerald-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
-            order.status === 'SELESAI_DITERIMA' 
+            currentOrder.status === 'SELESAI_DITERIMA' 
               ? 'text-emerald-700 bg-emerald-100 border-emerald-200' 
               : 'text-emerald-800 bg-emerald-100 border-emerald-200'
           }`}>
-            {order.status === 'SELESAI_DITERIMA' ? 'Pesanan Selesai' : 'Pesanan Aktif Anda'}
+            {currentOrder.status === 'SELESAI_DITERIMA' ? 'Pesanan Selesai' : 'Pesanan Aktif Anda'}
           </span>
           <h2 className="text-xl sm:text-2xl font-bold text-emerald-950 mt-1">
-            Order #{order.orderCode}
+            Order #{currentOrder.orderCode}
           </h2>
           <p className="text-xs text-emerald-700 font-mono">
-            Dibuat pukul {order.createdAt} • Titik Temu: {order.meetingPoint}
+            Dibuat pukul {currentOrder.createdAt} • Titik Temu: {currentOrder.meetingPoint}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {order.status === 'SELESAI_DITERIMA' && onDeleteOrder && (
+          {currentOrder.status === 'SELESAI_DITERIMA' && onDeleteOrder && (
             <button
-              onClick={() => onDeleteOrder(order.id)}
+              onClick={() => onDeleteOrder(currentOrder.id)}
               className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm border border-red-200"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Hapus Pesanan</span>
             </button>
           )}
-          {order.status !== 'SELESAI_DITERIMA' && (
+          {currentOrder.status !== 'SELESAI_DITERIMA' && (
             <button
               onClick={() => onNavigateTab('tracking')}
               className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
@@ -131,11 +170,11 @@ const OrderCard: React.FC<{
           {/* Order Items */}
           <div className="bg-white rounded-2xl p-5 border border-emerald-100 shadow-sm space-y-4">
             <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-wider">
-              Daftar Barang Titipan ({order.items.length} Item)
+              Daftar Barang Titipan ({currentOrder.items.length} Item)
             </h3>
 
             <div className="space-y-3">
-              {order.items.map((it, idx) => (
+              {currentOrder.items.map((it, idx) => (
                 <div key={idx} className="flex gap-3.5 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 items-center justify-between">
                   <div className="flex items-center gap-3">
                     <img 
@@ -178,23 +217,23 @@ const OrderCard: React.FC<{
             <div className="space-y-2 text-xs text-emerald-100">
               <div className="flex justify-between">
                 <span>Subtotal Harga Barang:</span>
-                <span className="font-mono text-white">Rp {order.totalItemPrice.toLocaleString('id-ID')}</span>
+                <span className="font-mono text-white">Rp {currentOrder.totalItemPrice.toLocaleString('id-ID')}</span>
               </div>
               <div className="flex justify-between">
                 <span>Ongkos Jastip (Disepakati):</span>
-                <span className="font-mono text-emerald-200">Rp {order.totalJastipFee.toLocaleString('id-ID')}</span>
+                <span className="font-mono text-emerald-200">Rp {currentOrder.totalJastipFee.toLocaleString('id-ID')}</span>
               </div>
               <div className="flex justify-between">
                 <span>Biaya Layanan & Rekber:</span>
-                <span className="font-mono text-white">Rp {order.appFee.toLocaleString('id-ID')}</span>
+                <span className="font-mono text-white">Rp {currentOrder.appFee.toLocaleString('id-ID')}</span>
               </div>
               <div className="flex justify-between text-emerald-300 pt-1 border-t border-emerald-700/50">
                 <span>Metode Pembayaran:</span>
-                <span className="font-semibold text-white">{order.paymentMethodLabel || 'QRIS Unismuh Pay'}</span>
+                <span className="font-semibold text-white">{currentOrder.paymentMethodLabel || 'QRIS Unismuh Pay'}</span>
               </div>
               <div className="pt-2 border-t border-emerald-700/60 flex justify-between font-bold text-sm text-white">
                 <span>Total Ditampung:</span>
-                <span className="font-mono text-emerald-200 text-base">Rp {order.grandTotal.toLocaleString('id-ID')}</span>
+                <span className="font-mono text-emerald-200 text-base">Rp {currentOrder.grandTotal.toLocaleString('id-ID')}</span>
               </div>
             </div>
           </div>
@@ -209,12 +248,12 @@ const OrderCard: React.FC<{
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Status Escrow Vault</span>
               <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                order.escrowStatus === 'HELD_IN_ESCROW' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
-                order.escrowStatus === 'RELEASED_TO_JASTIPER' ? 'bg-emerald-600 text-white shadow-sm' :
+                currentOrder.escrowStatus === 'HELD_IN_ESCROW' ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' :
+                currentOrder.escrowStatus === 'RELEASED_TO_JASTIPER' ? 'bg-emerald-600 text-white shadow-sm' :
                 'bg-emerald-50 text-emerald-800 border border-emerald-200'
               }`}>
-                {order.escrowStatus === 'HELD_IN_ESCROW' ? '🔒 Dana Terkunci di Rekber' :
-                 order.escrowStatus === 'RELEASED_TO_JASTIPER' ? '✓ Dana Dicairkan ke Jastiper' : 'Menunggu Pembayaran'}
+                {currentOrder.escrowStatus === 'HELD_IN_ESCROW' ? '🔒 Dana Terkunci di Rekber' :
+                 currentOrder.escrowStatus === 'RELEASED_TO_JASTIPER' ? '✓ Dana Dicairkan ke Jastiper' : 'Menunggu Pembayaran'}
               </span>
             </div>
 
@@ -229,18 +268,18 @@ const OrderCard: React.FC<{
             </div>
 
             {/* Simulating QRIS Payment if pending */}
-            {order.status === 'MENUNGGU_PEMBAYARAN' && (
+            {currentOrder.status === 'MENUNGGU_PEMBAYARAN' && (
               <button
                 onClick={() => setShowQrisModal(true)}
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
               >
                 <QrCode className="w-4 h-4" />
-                <span>Bayar Sekarang via QRIS (Rp {order.grandTotal.toLocaleString('id-ID')})</span>
+                <span>Bayar Sekarang via QRIS (Rp {currentOrder.grandTotal.toLocaleString('id-ID')})</span>
               </button>
             )}
 
             {/* Step Simulator Progression button for demo */}
-            {order.status !== 'SELESAI_DITERIMA' && (
+            {currentOrder.status !== 'SELESAI_DITERIMA' && (
             <div className="pt-2 border-t border-emerald-50 space-y-2">
               <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
                 Simulasi Alur Microservices Jastip:
@@ -252,10 +291,10 @@ const OrderCard: React.FC<{
               >
                 <RefreshCw className="w-3.5 h-3.5 text-emerald-700" />
                 <span>
-                  {order.status === 'ESCROW_DITAMPUNG' ? '1. Jastiper Belanja di Warung' :
-                   order.status === 'DIBELI_JASTIPER' ? '2. Jastiper Menuju Kampus' :
-                   order.status === 'MENUJU_KAMPUS' ? '3. Tiba di Menara Iqra (Titik Temu)' :
-                   order.status === 'SAMPAI_DI_TITIK_TEMU' ? '4. Scan QR & Cairkan Escrow' : 'Selesai (Reset Sesi)'}
+                  {currentOrder.status === 'ESCROW_DITAMPUNG' ? '1. Jastiper Belanja di Warung' :
+                   currentOrder.status === 'DIBELI_JASTIPER' ? '2. Jastiper Menuju Kampus' :
+                   currentOrder.status === 'MENUJU_KAMPUS' ? '3. Tiba di Menara Iqra (Titik Temu)' :
+                   currentOrder.status === 'SAMPAI_DI_TITIK_TEMU' ? '4. Scan QR & Cairkan Escrow' : 'Selesai (Reset Sesi)'}
                 </span>
               </button>
             </div>
@@ -269,7 +308,7 @@ const OrderCard: React.FC<{
             </h3>
             
             <div className="space-y-2.5">
-              {order.trackingHistory.slice(0, 4).map((step, idx) => (
+              {currentOrder.trackingHistory.slice(0, 4).map((step, idx) => (
                 <div key={idx} className="flex items-start gap-2.5 text-xs">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
                     step.done ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-700'
@@ -309,7 +348,7 @@ const OrderCard: React.FC<{
             
             <div>
               <h3 className="text-base font-bold text-emerald-950">Pembayaran QRIS Jastip Kampus</h3>
-              <p className="text-xs text-emerald-700 font-mono">Order: {order.orderCode}</p>
+              <p className="text-xs text-emerald-700 font-mono">Order: {currentOrder.orderCode}</p>
             </div>
 
             <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 space-y-2">
@@ -325,7 +364,7 @@ const OrderCard: React.FC<{
             </div>
 
             <div className="text-sm font-bold text-emerald-950 font-mono">
-              Total: Rp {order.grandTotal.toLocaleString('id-ID')}
+              Total: Rp {currentOrder.grandTotal.toLocaleString('id-ID')}
             </div>
 
             <button
@@ -355,101 +394,8 @@ const OrderCard: React.FC<{
           </div>
         </div>
       )}
-    </div>
-  );
-};
 
-export const MyOrdersSection: React.FC<MyOrdersSectionProps> = ({
-  userOrders,
-  onUpdateOrder,
-  onNavigateTab,
-  currentRole,
-  onShowToast,
-  onDeleteOrder,
-  activeOrderTab = 'active',
-  onChangeOrderTab
-}) => {
-  // Filter orders based on tab
-  const activeOrders = userOrders.filter(o => o.status !== 'SELESAI_DITERIMA');
-  const completedOrders = userOrders.filter(o => o.status === 'SELESAI_DITERIMA');
-  
-  // Get orders to display based on active tab
-  const displayOrders = activeOrderTab === 'active' ? activeOrders : completedOrders;
-  const isEmptyState = displayOrders.length === 0;
-
-  return (
-    <div className="space-y-6 animate-fade-in">
-      
-      {/* Tab Navigation */}
-      <div className="bg-white rounded-2xl p-1 border border-emerald-100 shadow-sm flex gap-2">
-        <button
-          onClick={() => onChangeOrderTab?.('active')}
-          className={`flex-1 px-4 py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 ${
-            activeOrderTab === 'active'
-              ? 'bg-emerald-600 text-white shadow-md'
-              : 'text-emerald-700 hover:bg-emerald-50'
-          }`}
-        >
-          <Clock className="w-4 h-4" />
-          <span>Pesanan Saya ({activeOrders.length})</span>
-        </button>
-        <button
-          onClick={() => onChangeOrderTab?.('history')}
-          className={`flex-1 px-4 py-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 ${
-            activeOrderTab === 'history'
-              ? 'bg-emerald-600 text-white shadow-md'
-              : 'text-emerald-700 hover:bg-emerald-50'
-          }`}
-        >
-          <History className="w-4 h-4" />
-          <span>Riwayat ({completedOrders.length})</span>
-        </button>
-      </div>
-
-      {/* Empty State */}
-      {isEmptyState && (
-        <div className="bg-white p-8 sm:p-12 rounded-3xl border border-emerald-100 shadow-sm text-center">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 mx-auto flex items-center justify-center text-emerald-700 mb-4">
-            {activeOrderTab === 'active' ? (
-              <FileText className="w-8 h-8" />
-            ) : (
-              <History className="w-8 h-8" />
-            )}
-          </div>
-          <h3 className="text-lg font-bold text-emerald-950 mb-2">
-            {activeOrderTab === 'active' ? 'Belum Ada Pesanan Aktif' : 'Belum Ada Riwayat Pesanan'}
-          </h3>
-          <p className="text-sm text-emerald-700 mb-6">
-            {activeOrderTab === 'active' 
-              ? 'Anda belum membuat pesanan. Mulai berbelanja sekarang dengan membuat pesanan baru di tab Katalog.'
-              : 'Pesanan yang sudah selesai akan muncul di sini.'}
-          </p>
-          {activeOrderTab === 'active' && (
-            <button
-              onClick={() => onNavigateTab('catalog')}
-              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm"
-            >
-              Mulai Berbelanja
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* Order List */}
-      {!isEmptyState && (
-        <div className="space-y-6">
-          {displayOrders.map((order) => (
-            <OrderCard
-              key={order.id}
-              order={order}
-              onUpdateOrder={onUpdateOrder}
-              onNavigateTab={onNavigateTab}
-              onShowToast={onShowToast}
-              onDeleteOrder={onDeleteOrder}
-              isCompleted={activeOrderTab === 'history'}
-            />
-          ))}
-        </div>
+      </>
       )}
 
     </div>

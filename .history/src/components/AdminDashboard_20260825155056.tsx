@@ -717,12 +717,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <div className="text-3xl font-black text-[#34D399] tracking-tight relative z-10">
                   {(() => {
-                    const totalRevenue = Object.values(studentOrders || {}).reduce((sum, orders) => {
-                      return sum + (orders || []).reduce((acc, order) => {
-                        const grandTotal = order.grandTotal || 0;
-                        const commission = Math.round(grandTotal * 0.05); // 5% commission
-                        return acc + commission;
-                      }, 0);
+                    const totalRevenue = Object.values(studentOrders).reduce((sum, order) => {
+                      const grandTotal = order.grandTotal || 0;
+                      const commission = Math.round(grandTotal * 0.05); // 5% commission
+                      return sum + commission;
                     }, 0);
                     if (totalRevenue === 0) return 'Rp —';
                     return new Intl.NumberFormat('id-ID', {
@@ -1041,10 +1039,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#1B4D3E]/60 text-slate-200">
-                      {Object.entries(studentOrders || {}).length > 0 ? (
-                        Object.entries(studentOrders || {}).flatMap(([nim, orders]) => 
-                          (orders || []).map((order) => ({ nim, order }))
-                        ).map(({ nim, order }) => {
+                      {Object.entries(studentOrders).length > 0 ? (
+                        Object.entries(studentOrders).map(([nim, order]) => {
                           const statusColors: Record<string, { bg: string; text: string; border: string }> = {
                             'MENUNGGU_PEMBAYARAN': { bg: 'bg-yellow-950', text: 'text-yellow-300', border: 'border-yellow-800' },
                             'ESCROW_DITAMPUNG': { bg: 'bg-blue-950', text: 'text-blue-300', border: 'border-blue-800' },
